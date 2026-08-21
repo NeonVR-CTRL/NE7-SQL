@@ -1,0 +1,6 @@
+{
+  "endpoint": "https://app.drime.cloud/api/v1",
+  "keys": [
+    { "id": 1, "label": "Primary", "apiKey": "54148|jg0i3xkpkDJeRANumhJqwO8AIFy8OM0iirtvw8Fi96d6a13d", "capacityGB": 20 }
+  ]
+}

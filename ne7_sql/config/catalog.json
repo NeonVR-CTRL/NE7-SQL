@@ -1,0 +1,1 @@
+{"orders":{"relOid":107403,"cols":["id","user_id","amount"],"indexes":[]},"users":{"relOid":71261,"cols":["id","name"],"indexes":[{"name":"idx_user","relOid":113453,"col":"id"}]}}

@@ -1,0 +1,44 @@
+{
+  "databases": [
+    {
+      "id": "db_default",
+      "name": "ne7sql_prod",
+      "group": "Production",
+      "maxSizeMB": 500,
+      "usedMB": 0.01,
+      "password": "",
+      "tables": 0,
+      "tableMeta": [],
+      "rows": {},
+      "createdAt": "2026-08-21T21:48:13.918Z"
+    }
+  ],
+  "keys": [
+    {
+      "id": "key_primary",
+      "nickname": "Drime Primary",
+      "key": "54148|jg0i3xkpkDJeRANumhJqwO8AIFy8OM0iirtvw8Fi96d6a13d",
+      "capacityGB": 20,
+      "usedGB": 0.01,
+      "status": "HEALTHY",
+      "error": ""
+    }
+  ],
+  "groups": [
+    {
+      "id": "g1",
+      "name": "Production",
+      "color": "#34D399"
+    },
+    {
+      "id": "g2",
+      "name": "Staging",
+      "color": "#FBBF24"
+    },
+    {
+      "id": "g3",
+      "name": "Analytics",
+      "color": "#818CF8"
+    }
+  ]
+}
