@@ -1,7 +1,0 @@
-{
-  "name": "ne7_sql",
-  "version": "18.6.0",
-  "type": "module",
-  "main": "src/boot.js",
-  "scripts": { "start": "node src/boot.js" }
-}
