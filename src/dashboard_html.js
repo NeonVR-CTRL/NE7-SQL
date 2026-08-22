@@ -18,6 +18,8 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;z-index:2}
 .auth-card{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:420px}
 .auth-card h1{font-size:1.3rem;margin-bottom:6px}.auth-card p{color:var(--text3);font-size:.85rem;margin-bottom:22px}
+.switch-line{margin-top:14px;font-size:.78rem;color:var(--text3);text-align:center}
+.switch-line a{color:var(--accent);text-decoration:none}
 .field{margin-bottom:16px}.field label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:6px}
 .field input{width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;outline:none}
 .field input:focus{border-color:var(--accent)}
@@ -113,11 +115,13 @@ td{padding:14px 20px;font-size:.82rem;border-bottom:1px solid var(--border);font
 <div class="field"><label>Admin Email</label><input id="su-email" type="email"></div>
 <div class="field"><label>Admin Password</label><input id="su-pass" type="password"></div>
 <div class="field"><label>Drime API Key</label><input id="su-key"></div>
-<button class="btn btn-primary" id="su-go" style="width:100%;justify-content:center">Initialize</button></div></div>
+<button class="btn btn-primary" id="su-go" style="width:100%;justify-content:center">Initialize</button>
+<p class="switch-line">Already set up? <a href="#" id="go-login">Sign in</a></p></div></div>
 <div class="screen hidden" id="screen-login"><div class="auth-card"><h1>NE7-SQL</h1><p>Sign in — admins get full control, customers get their workspace.</p>
 <div class="field"><label>Email</label><input id="li-email" type="email"></div>
 <div class="field"><label>Password</label><input id="li-pass" type="password"></div>
-<button class="btn btn-primary" id="li-go" style="width:100%;justify-content:center">Sign In</button></div></div>
+<button class="btn btn-primary" id="li-go" style="width:100%;justify-content:center">Sign In</button>
+<p class="switch-line">First run? <a href="#" id="go-setup">Initialize platform</a></p></div></div>
 <div class="app hidden" id="app">
 <aside class="sidebar" id="sidebar"><div class="logo">NE7-SQL <span>Enterprise</span></div><div id="nav"></div>
 <div class="sidebar-footer"><div class="status-pill"><span class="status-dot"></span>All systems operational</div></div></aside>
@@ -141,15 +145,35 @@ function toast(m){ var t = document.createElement('div'); t.className = 'toast';
 function modal(h){ $('#modal-root').innerHTML = '<div class="modal-overlay active"><div class="modal">' + h + '</div></div>'; $$('[data-close]').forEach(function(b){ b.onclick = closeModal; }); }
 function closeModal(){ $('#modal-root').innerHTML = ''; }
 function confirmBox(t, msg, cb){ modal('<h2 style="color:var(--red)">' + t + '</h2><p>' + msg + '</p><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-danger" id="cfy">Confirm</button></div>'); $('#cfy').onclick = function(){ closeModal(); cb(); }; }
+function showLogin(){ $('#screen-setup').classList.add('hidden'); $('#screen-login').classList.remove('hidden'); }
+function showSetup(){ $('#screen-login').classList.add('hidden'); $('#screen-setup').classList.remove('hidden'); }
 
-api('/api/me').then(function(me){
-  if (me && me.role) { ROLE = me.role; enter(); } else { $('#screen-login').classList.remove('hidden'); }
+var cv = document.getElementById('bg-canvas'), cx = cv.getContext('2d'), W, H, orbs = [];
+function rs(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+addEventListener('resize', rs); rs();
+orbs = [{x:.2,y:.25,r:Math.max(W,H)*.4,c:'129,140,248',a:.10,vx:.00025,vy:.0002},{x:.8,y:.7,r:Math.max(W,H)*.45,c:'192,132,252',a:.08,vx:-.0002,vy:.00028},{x:.5,y:.95,r:Math.max(W,H)*.38,c:'56,189,248',a:.07,vx:.00022,vy:-.0002}];
+function draw(){ cx.clearRect(0,0,W,H); for (var i=0;i<orbs.length;i++){ var o=orbs[i]; o.x+=o.vx; o.y+=o.vy; if(o.x<-.1||o.x>1.1)o.vx*=-1; if(o.y<-.1||o.y>1.1)o.vy*=-1; var g=cx.createRadialGradient(o.x*W,o.y*H,0,o.x*W,o.y*H,o.r); g.addColorStop(0,'rgba('+o.c+','+o.a+')'); g.addColorStop(1,'rgba('+o.c+',0)'); cx.fillStyle=g; cx.fillRect(0,0,W,H);} requestAnimationFrame(draw); }
+draw();
+
+api('/api/status').then(function(st){
+  if (st && st.setup === true) {
+    api('/api/me').then(function(me){
+      if (me && me.role) { ROLE = me.role; enter(); } else { showLogin(); }
+    });
+  } else if (st && st.setup === false) {
+    showSetup();
+  } else {
+    showLogin();
+  }
 });
 setTimeout(function(){ $('#boot').classList.add('hidden'); }, 900);
 
+$('#go-login').onclick = function(e){ e.preventDefault(); showLogin(); };
+$('#go-setup').onclick = function(e){ e.preventDefault(); showSetup(); };
+
 $('#su-go').onclick = function(){
   api('/api/setup','POST',{adminEmail:$('#su-email').value, adminPassword:$('#su-pass').value, drimeKey:$('#su-key').value}).then(function(r){
-    if (r.ok) { toast('Initialized! Sign in.'); $('#screen-setup').classList.add('hidden'); $('#screen-login').classList.remove('hidden'); }
+    if (r.ok) { toast('Initialized! Sign in.'); showLogin(); }
     else { toast(r.error || 'Failed'); }
   });
 };
