@@ -1,10 +1,21 @@
-export default `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>NE7-SQL</title><style>
+export default `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>NE7-SQL — Enterprise Cloud Database</title>
+<style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#060608;--surface:rgba(17,17,20,.8);--surface2:rgba(24,24,28,.92);--surface3:#1F1F23;--border:rgba(255,255,255,.08);--text:#FAFAFA;--text2:#A1A1AA;--text3:#71717A;--accent:#818CF8;--accent2:#C084FC;--green:#34D399;--red:#F87171;--amber:#FBBF24;--radius:14px}
-body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+:root{--bg:#060608;--surface:rgba(17,17,20,.8);--surface2:rgba(24,24,28,.92);--surface3:#1F1F23;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.12);--text:#FAFAFA;--text2:#A1A1AA;--text3:#71717A;--accent:#818CF8;--accent2:#C084FC;--accent3:#38BDF8;--green:#34D399;--red:#F87171;--amber:#FBBF24;--radius:16px;--radius-sm:10px}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .hidden{display:none!important}
-.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.aurora{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent3),transparent);background-size:200% 100%;animation:aur 6s linear infinite;opacity:.7}
+@keyframes aur{0%{background-position:0% 0}100%{background-position:200% 0}}
+.boot{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .6s,visibility .6s}
+.boot.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.boot-logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;animation:bp 1.6s infinite}
+@keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.boot-text{font-size:.8rem;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;z-index:2}
 .auth-card{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:420px}
 .auth-card h1{font-size:1.3rem;margin-bottom:6px}.auth-card p{color:var(--text3);font-size:.85rem;margin-bottom:22px}
 .field{margin-bottom:16px}.field label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:6px}
@@ -14,203 +25,182 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
 .btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text2)}
 .btn-danger{background:rgba(248,113,113,.12);color:var(--red);border-color:rgba(248,113,113,.3)}
-.app{display:flex;min-height:100vh}
-.sidebar{width:230px;background:rgba(10,10,12,.92);border-right:1px solid var(--border);padding:20px 12px;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;overflow-y:auto}
+.btn-sm{padding:6px 10px;font-size:.72rem}
+.app{display:flex;min-height:100vh;position:relative;z-index:2}
+.sidebar{width:230px;background:rgba(10,10,12,.92);border-right:1px solid var(--border);padding:20px 12px;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;overflow-y:auto;z-index:100}
 .logo{font-weight:800;font-size:1rem;margin-bottom:24px;padding:0 12px}.logo span{color:var(--text3);font-weight:400;font-size:.7rem}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text2);font-size:.85rem;font-weight:500;cursor:pointer;margin-bottom:2px}
 .nav-item:hover{background:rgba(255,255,255,.05);color:var(--text)}
 .nav-item.active{background:rgba(129,140,248,.15);color:var(--accent)}
 .nav-sep{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:14px 12px 6px}
+.nav-badge{margin-left:auto;background:var(--surface3);color:var(--text3);font-size:.65rem;padding:2px 7px;border-radius:5px;font-weight:600}
+.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
+.status-pill{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--text2)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pul 2s infinite}
+@keyframes pul{0%,100%{opacity:1}50%{opacity:.4}}
 .main{flex:1;margin-left:230px;padding:28px 36px;max-width:1300px}
+.mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;height:56px;background:rgba(6,6,8,.85);border-bottom:1px solid var(--border);z-index:90;align-items:center;justify-content:space-between;padding:0 16px}
+.menu-btn{background:none;border:none;color:var(--text);cursor:pointer;padding:8px}
+.mobile-logo{font-weight:700}
+.sidebar-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:95;opacity:0;visibility:hidden;transition:.3s}
+.sidebar-backdrop.active{opacity:1;visibility:visible}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:12px;flex-wrap:wrap}
 .header h1{font-size:1.5rem;font-weight:800}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:24px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-.stat .v{font-size:1.6rem;font-weight:800}.stat .l{font-size:.75rem;color:var(--text3)}
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
-.panel-h{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.9rem;flex-wrap:wrap;gap:8px}
-table{width:100%;border-collapse:collapse}
-th{text-align:left;padding:10px 18px;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);background:var(--surface2)}
-td{padding:12px 18px;font-size:.83rem;border-top:1px solid var(--border);font-family:ui-monospace,monospace}
-.badge{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600}
-.badge-green{background:rgba(52,211,153,.12);color:var(--green)}
-.badge-red{background:rgba(248,113,113,.12);color:var(--red)}
-.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text2);display:inline-flex;align-items:center;justify-content:center;margin-right:4px}
+.header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:.3s}
+.card:hover{border-color:var(--border2)}
+.span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-8{grid-column:span 8}
+.stat-card{display:flex;flex-direction:column;gap:12px}
+.stat-value{font-size:2rem;font-weight:800}
+.stat-label{font-size:.75rem;color:var(--text3)}
+.stat-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.stat-icon.purple{background:rgba(129,140,248,.12);color:var(--accent)}.stat-icon.green{background:rgba(52,211,153,.12);color:var(--green)}.stat-icon.amber{background:rgba(251,191,36,.12);color:var(--amber)}.stat-icon.red{background:rgba(248,113,113,.12);color:var(--red)}
+.section-title{font-size:1rem;font-weight:700;margin-bottom:16px}
+.group-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.group-tab{padding:7px 14px;border-radius:20px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2)}
+.group-tab.active{background:rgba(129,140,248,.15);border-color:var(--accent);color:var(--accent)}
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.db-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.3s}
+.db-card:hover{border-color:var(--accent)}
+.db-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:8px}
+.db-name{font-weight:700;font-size:.9rem;font-family:ui-monospace,monospace;word-break:break-all}
+.db-status{font-size:.6rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:rgba(52,211,153,.1);color:var(--green)}
+.db-meta{display:flex;gap:16px;font-size:.72rem;color:var(--text3);margin-bottom:16px;flex-wrap:wrap}
+.db-storage-bar{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden}
+.db-storage-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.db-storage-text{display:flex;justify-content:space-between;font-size:.65rem;color:var(--text3);margin-top:6px}
+.db-actions{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{text-align:left;padding:12px 20px;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);background:var(--surface2)}
+td{padding:14px 20px;font-size:.82rem;border-bottom:1px solid var(--border);font-family:ui-monospace,monospace}
+.badge{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:600}
+.badge-green{background:rgba(52,211,153,.1);color:var(--green)}.badge-red{background:rgba(248,113,113,.1);color:var(--red)}
+.icon-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text2);display:inline-flex;align-items:center;justify-content:center;margin-right:4px}
 .icon-btn:hover{color:var(--accent);border-color:var(--accent)}
 .icon-btn.danger:hover{color:var(--red);border-color:var(--red)}
-.bar{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden}.bar>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 .terminal{background:rgba(8,8,10,.95);border:1px solid var(--border);border-radius:var(--radius);font-family:ui-monospace,monospace}
-.term-body{padding:14px;height:300px;overflow-y:auto;font-size:.78rem;line-height:1.8}
-.term-in{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}
-.term-in input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:.8rem}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
-.modal-card{background:var(--surface2);border:1px solid var(--border);border-radius:18px;padding:28px;width:100%;max-width:460px;max-height:85vh;overflow-y:auto}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 18px;font-size:.85rem;z-index:200;max-width:90vw}
+.terminal-body{padding:16px;height:320px;overflow-y:auto;font-size:.78rem;line-height:1.9}
+.log-line{display:flex;gap:12px;flex-wrap:wrap}
+.log-level.INFO{color:var(--green)}.log-level.ERROR{color:var(--red)}
+.log-module{color:var(--accent)}
+.log-msg{color:var(--text2);word-break:break-all}
+.sql-input-wrap{display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(8,8,10,.9);border:1px solid var(--border);border-radius:10px}
+.sql-prompt{color:var(--accent);font-weight:600;font-size:.8rem}
+.sql-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:ui-monospace,monospace;font-size:.8rem}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:32px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1.1rem;margin-bottom:4px}.modal p{font-size:.8rem;color:var(--text3);margin-bottom:24px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:28px;flex-wrap:wrap}
+.form-input{width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.85rem;outline:none}
+.form-label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:6px}
+.form-group{margin-bottom:18px}
+.dsn-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:ui-monospace,monospace;font-size:.75rem;word-break:break-all;color:var(--accent);display:flex;gap:8px;justify-content:space-between;align-items:center}
+.dsn-box button{background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:6px;font-size:.7rem}
 .danger-zone{border:1px solid rgba(248,113,113,.35);border-radius:var(--radius);padding:22px;background:rgba(248,113,113,.04)}
 .danger-zone h3{color:var(--red);margin-bottom:6px}.danger-zone p{color:var(--text3);font-size:.85rem;margin-bottom:14px}
-.src-wrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
-.src-list{width:220px;max-height:480px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
-.src-file{padding:9px 12px;font-size:.75rem;font-family:ui-monospace,monospace;cursor:pointer;color:var(--text2);border-bottom:1px solid var(--border)}
-.src-file:hover{background:rgba(255,255,255,.04)}.src-file.active{color:var(--accent);background:rgba(129,140,248,.1)}
-.src-view{flex:1;min-width:0;max-height:480px;overflow:auto;background:rgba(8,8,10,.95);border:1px solid var(--border);border-radius:10px;padding:16px}
-.src-view pre{font-size:.72rem;line-height:1.6;color:#E2E8F0;white-space:pre-wrap;word-break:break-word}
 .arch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px}
 .arch-card h3{font-size:.95rem;margin-bottom:8px;color:var(--accent)}
 .arch-card p{font-size:.82rem;color:var(--text2);line-height:1.6}
 .flow{background:rgba(8,8,10,.95);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:ui-monospace,monospace;font-size:.78rem;color:var(--green);white-space:pre;overflow-x:auto;line-height:1.7}
-@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:16px}}
+.src-wrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.src-list{width:220px;max-height:480px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.src-file{padding:9px 12px;font-size:.75rem;font-family:ui-monospace,monospace;cursor:pointer;color:var(--text2);border-bottom:1px solid var(--border)}
+.src-file.active{color:var(--accent);background:rgba(129,140,248,.1)}
+.src-view{flex:1;min-width:0;max-height:480px;overflow:auto;background:rgba(8,8,10,.95);border:1px solid var(--border);border-radius:10px;padding:16px}
+.src-view pre{font-size:.72rem;line-height:1.6;color:#E2E8F0;white-space:pre-wrap;word-break:break-word}
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:400;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;font-size:.85rem;max-width:90vw}
+@media(max-width:1200px){.span-3{grid-column:span 6}.span-4{grid-column:span 6}.span-8{grid-column:span 12}}
+@media(max-width:900px){.mobile-topbar{display:flex}.sidebar{transform:translateX(-100%);width:260px;padding-top:72px}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:72px 16px 32px}.span-3,.span-4,.span-8{grid-column:span 12}}
+@media(max-width:640px){.main{padding:68px 12px 24px}.bento,.db-grid{gap:12px}.card{padding:18px}.stat-value{font-size:1.6rem}.header h1{font-size:1.35rem}.header-actions{width:100%}.header-actions .btn{flex:1;justify-content:center}.modal{padding:24px}.toast-container{left:12px;right:12px;bottom:12px}.toast{width:100%}}
 </style></head><body>
-<div id="screen-setup" class="screen hidden"><div class="auth-card"><h1>NE7-SQL Setup</h1><p>First run.</p>
+<canvas id="bg-canvas"></canvas><div class="aurora"></div>
+<div class="boot" id="boot"><div class="boot-logo"></div><div class="boot-text">Initializing NE7-SQL</div></div>
+<div class="mobile-topbar"><button class="menu-btn" id="menu-btn">☰</button><div class="mobile-logo">NE7-SQL</div><div style="width:38px"></div></div>
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+<div class="screen hidden" id="screen-setup"><div class="auth-card"><h1>NE7-SQL Setup</h1><p>First run — create your admin account and connect Drime storage.</p>
 <div class="field"><label>Admin Email</label><input id="su-email" type="email"></div>
 <div class="field"><label>Admin Password</label><input id="su-pass" type="password"></div>
 <div class="field"><label>Drime API Key</label><input id="su-key"></div>
 <button class="btn btn-primary" id="su-go" style="width:100%;justify-content:center">Initialize</button></div></div>
-<div id="screen-login" class="screen hidden"><div class="auth-card"><h1>NE7-SQL</h1><p>Sign in.</p>
+<div class="screen hidden" id="screen-login"><div class="auth-card"><h1>NE7-SQL</h1><p>Sign in — admins get full control, customers get their workspace.</p>
 <div class="field"><label>Email</label><input id="li-email" type="email"></div>
 <div class="field"><label>Password</label><input id="li-pass" type="password"></div>
 <button class="btn btn-primary" id="li-go" style="width:100%;justify-content:center">Sign In</button></div></div>
-<div id="app" class="app hidden">
-<aside class="sidebar"><div class="logo">NE7-SQL <span id="role-tag"></span></div><div id="nav"></div></aside>
+<div class="app hidden" id="app">
+<aside class="sidebar" id="sidebar"><div class="logo">NE7-SQL <span>Enterprise</span></div><div id="nav"></div>
+<div class="sidebar-footer"><div class="status-pill"><span class="status-dot"></span>All systems operational</div></div></aside>
 <main class="main"><div id="content"></div></main>
 </div>
-<div id="modal-root"></div><div id="toast-root"></div>
+<div id="modal-root"></div><div class="toast-container" id="toasts"></div>
 <script>
 (function(){
 'use strict';
-var TOKEN = localStorage.getItem('ne7_token') || '';
-var ROLE = '', NAME = '';
-function $(s){ return document.querySelector(s); }
-function api(path, method, body){
-  var h = {'Content-Type':'application/json'};
-  if (TOKEN) h['Authorization'] = 'Bearer ' + TOKEN;
-  return fetch(path, {method: method || 'GET', headers: h, body: body ? JSON.stringify(body) : undefined}).then(function(r){return r.json();});
-}
-function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;$('#toast-root').appendChild(t);setTimeout(function(){t.remove();},3500);}
-function modal(html){$('#modal-root').innerHTML='<div class="modal"><div class="modal-card">'+html+'</div></div>';}
+var NL=String.fromCharCode(10);
+var TOKEN=localStorage.getItem('ne7_token')||'';
+var ROLE='',NAME='';
+var cv=document.getElementById('bg-canvas'),cx=cv.getContext('2d'),W,H,orbs=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+addEventListener('resize',rs);rs();
+orbs=[{x:.2,y:.25,r:Math.max(W,H)*.4,c:'129,140,248',a:.10,vx:.00025,vy:.0002},{x:.8,y:.7,r:Math.max(W,H)*.45,c:'192,132,252',a:.08,vx:-.0002,vy:.00028},{x:.5,y:.95,r:Math.max(W,H)*.38,c:'56,189,248',a:.07,vx:.00022,vy:-.0002}];
+function draw(){cx.clearRect(0,0,W,H);for(var i=0;i<orbs.length;i++){var o=orbs[i];o.x+=o.vx;o.y+=o.vy;if(o.x<-.1||o.x>1.1)o.vx*=-1;if(o.y<-.1||o.y>1.1)o.vy*=-1;var g=cx.createRadialGradient(o.x*W,o.y*H,0,o.x*W,o.y*H,o.r);g.addColorStop(0,'rgba('+o.c+','+o.a+')');g.addColorStop(1,'rgba('+o.c+',0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);}requestAnimationFrame(draw);}
+draw();
+function $(s){return document.querySelector(s);}
+function $$(s){return document.querySelectorAll(s);}
+function api(p,m,b){var h={'Content-Type':'application/json'};if(TOKEN)h['Authorization']='Bearer '+TOKEN;return fetch(p,{method:m||'GET',headers:h,body:b?JSON.stringify(b):undefined}).then(function(r){return r.json();});}
+function toast(m,t){var d=document.createElement('div');d.className='toast';d.textContent=m;$('#toasts').appendChild(d);setTimeout(function(){d.remove();},3500);}
+function modal(h){$('#modal-root').innerHTML='<div class="modal-overlay active"><div class="modal">'+h+'</div></div>';bindModal();}
 function closeModal(){$('#modal-root').innerHTML='';}
-api('/api/me').then(function(me){
-  if (me && me.role){ ROLE = me.role; NAME = me.name; enterApp(); }
-  else { $('#screen-login').classList.remove('hidden'); }
-});
-$('#su-go').addEventListener('click', function(){
-  api('/api/setup','POST',{adminEmail:$('#su-email').value, adminPassword:$('#su-pass').value, drimeKey:$('#su-key').value})
-    .then(function(r){ if(r.ok){ toast('Initialized! Sign in.'); $('#screen-setup').classList.add('hidden'); $('#screen-login').classList.remove('hidden'); } else toast(r.error||'Failed'); });
-});
-$('#li-go').addEventListener('click', function(){
-  api('/api/login','POST',{email:$('#li-email').value, password:$('#li-pass').value}).then(function(r){
-    if (r.token){ TOKEN=r.token; ROLE=r.role; NAME=r.name; localStorage.setItem('ne7_token',TOKEN); enterApp(); }
-    else toast(r.error||'Login failed');
-  });
-});
-function enterApp(){
-  $('#screen-setup').classList.add('hidden');
-  $('#screen-login').classList.add('hidden');
-  $('#app').classList.remove('hidden');
-  $('#role-tag').textContent = ROLE === 'admin' ? 'ADMIN' : 'CUSTOMER';
-  buildNav(); nav(ROLE === 'admin' ? 'overview' : 'databases');
-}
-function buildNav(){
-  var items = ROLE === 'admin'
-    ? [['overview','Overview'],['databases','All Databases'],['keys','API Keys'],['admins','Admins'],['customers','Customers'],['console','SQL Console'],['panel','NE7 Panel'],['settings','Settings']]
-    : [['databases','My Databases'],['console','SQL Console']];
-  $('#nav').innerHTML = items.map(function(i){return '<div class="nav-item" data-v="'+i[0]+'">'+i[1]+'</div>';}).join('')
-    + '<div class="nav-sep">Session</div><div class="nav-item" id="logout">Logout</div>';
-  document.querySelectorAll('.nav-item').forEach(function(n){
-    n.addEventListener('click', function(){
-      if(n.id==='logout'){localStorage.removeItem('ne7_token');location.reload();}
-      nav(n.dataset.v);
-    });
-  });
-}
-function nav(v){
-  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active', n.dataset.v===v);});
-  if(v==='overview')viewOverview();
-  if(v==='databases')viewDatabases();
-  if(v==='keys')viewKeys();
-  if(v==='admins')viewAdmins();
-  if(v==='customers')viewCustomers();
-  if(v==='console')viewConsole();
-  if(v==='panel')viewPanel();
-  if(v==='settings')viewSettings();
-}
-function viewOverview(){
-  api('/api/admin/storage').then(function(s){
-    $('#content').innerHTML = '<div class="header"><h1>Overview</h1></div><div class="grid">'
-      +'<div class="stat"><div class="v">'+s.grandTotalGB+' GB</div><div class="l">Grand Total</div></div>'
-      +'<div class="stat"><div class="v">'+s.grandUsedGB+' GB</div><div class="l">Grand Used</div></div>'
-      +'<div class="stat"><div class="v">'+s.grandBalanceGB+' GB</div><div class="l">Grand Balance</div></div></div>'
-      +'<div class="panel"><div class="panel-h">Storage per API Key</div><table><tr><th>Key</th><th>Status</th><th>Capacity</th><th>Used</th><th>Balance</th><th>Util</th></tr>'
-      + s.rows.map(function(r){ var pct=Math.round(r.usedGB/r.capacityGB*100); return '<tr><td>'+r.nickname+'</td><td><span class="badge '+(r.status==='HEALTHY'?'badge-green':'badge-red')+'">'+r.status+'</span></td><td>'+r.capacityGB+' GB</td><td>'+r.usedGB+' GB</td><td>'+r.balanceGB+' GB</td><td style="width:120px"><div class="bar"><div style="width:'+pct+'%"></div></div></td></tr>'; }).join('')
-      +'</table></div>';
-  });
-}
-function viewDatabases(){
-  api('/api/databases').then(function(dbs){
-    $('#content').innerHTML = '<div class="header"><h1>'+(ROLE==='admin'?'All Databases':'My Databases')+'</h1></div><div class="grid">'
-      + (dbs.length ? dbs.map(function(d){ return '<div class="stat"><div class="v" style="font-size:1rem">'+d.name+'</div><div class="l">'+d.tables+' tables'+(d.key?' · key: '+d.key:'')+'</div></div>'; }).join('') : '<div class="stat"><div class="l">No databases yet</div></div>')
-      +'</div>';
-  });
-}
-function viewKeys(){
-  api('/api/admin/keys').then(function(keys){
-    $('#content').innerHTML = '<div class="header"><h1>API Keys</h1><button class="btn btn-primary" id="add-key">+ Add Key</button></div>'
-      +'<div class="panel"><table><tr><th>Nickname</th><th>API Key</th><th>Status</th><th>Capacity</th><th>Actions</th></tr>'
-      + keys.map(function(k){ return '<tr><td>'+k.nickname+'</td><td data-full="'+k.id+'">'+k.key+'</td><td><span class="badge '+(k.status==='HEALTHY'?'badge-green':'badge-red')+'">'+(k.status||'UNKNOWN')+'</span></td><td>'+k.capacityGB+' GB</td><td>'
-        +'<button class="icon-btn" data-eye="'+k.id+'">👁</button><button class="icon-btn" data-copy="'+k.id+'">⧉</button><button class="icon-btn" data-edit="'+k.id+'" data-nick="'+k.nickname+'">✎</button><button class="icon-btn danger" data-del="'+k.id+'">🗑</button></td></tr>'; }).join('')
-      +'</table></div>';
-    $('#add-key').addEventListener('click', function(){ modal('<h2>Add API Key</h2><div class="field"><label>Nickname</label><input id="k-nick"></div><div class="field"><label>Key</label><input id="k-val"></div><button class="btn btn-primary" id="k-save">Save</button>'); $('#k-save').addEventListener('click', function(){ api('/api/admin/keys','POST',{nickname:$('#k-nick').value,key:$('#k-val').value}).then(function(r){closeModal();toast(r.healthy?'Key added (healthy)':'Key added but unreachable');viewKeys();}); }); });
-    document.querySelectorAll('[data-eye]').forEach(function(b){ b.addEventListener('click', function(){ var id=b.dataset.eye; var td=document.querySelector('[data-full="'+id+'"]'); api('/api/admin/keys/'+id+'/reveal').then(function(r){ td.textContent = td.dataset.shown ? r.key.slice(0,6)+'••••••••'+r.key.slice(-4) : r.key; td.dataset.shown = td.dataset.shown ? '' : '1'; }); }); });
-    document.querySelectorAll('[data-copy]').forEach(function(b){ b.addEventListener('click', function(){ api('/api/admin/keys/'+b.dataset.copy+'/reveal').then(function(r){ navigator.clipboard.writeText(r.key); toast('Copied'); }); }); });
-    document.querySelectorAll('[data-edit]').forEach(function(b){ b.addEventListener('click', function(){ var id=b.dataset.edit; modal('<h2>Edit Key</h2><div class="field"><label>Nickname</label><input id="e-nick" value="'+b.dataset.nick+'"></div><button class="btn btn-primary" id="e-save">Save</button>'); $('#e-save').addEventListener('click', function(){ api('/api/admin/keys','PUT',{id:id,nickname:$('#e-nick').value}).then(function(){closeModal();viewKeys();}); }); }); });
-    document.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){ if(confirm('Delete this key?')) api('/api/admin/keys/'+b.dataset.del,'DELETE').then(viewKeys); }); });
-  });
-}
-function viewAdmins(){
-  api('/api/admin/admins').then(function(list){
-    $('#content').innerHTML = '<div class="header"><h1>Admins</h1><button class="btn btn-primary" id="add-admin">+ Add Admin</button></div>'
-      +'<div class="panel"><table><tr><th>Email</th><th>Actions</th></tr>'
-      + list.map(function(e){ return '<tr><td>'+e+'</td><td><button class="icon-btn danger" data-del="'+encodeURIComponent(e)+'">🗑</button></td></tr>'; }).join('') +'</table></div>';
-    $('#add-admin').addEventListener('click', function(){ modal('<h2>Add Admin</h2><div class="field"><label>Email</label><input id="a-email"></div><div class="field"><label>Temp Password</label><input id="a-pass" value="admin123"></div><button class="btn btn-primary" id="a-save">Save</button>'); $('#a-save').addEventListener('click', function(){ api('/api/admin/admins','POST',{email:$('#a-email').value,password:$('#a-pass').value}).then(function(){closeModal();viewAdmins();}); }); });
-    document.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){ if(confirm('Remove admin?')) api('/api/admin/admins/'+b.dataset.del,'DELETE').then(viewAdmins); }); });
-  });
-}
-function viewCustomers(){
-  api('/api/admin/customers').then(function(list){
-    $('#content').innerHTML = '<div class="header"><h1>Customers</h1><button class="btn btn-primary" id="add-cust">+ Add Customer</button></div>'
-      +'<div class="panel"><table><tr><th>Name</th><th>Email</th><th>Tenant</th><th>Actions</th></tr>'
-      + list.map(function(c){ return '<tr><td>'+c.name+'</td><td>'+c.email+'</td><td>'+c.tenantId+'</td><td><button class="icon-btn danger" data-del="'+c.id+'">🗑</button></td></tr>'; }).join('') +'</table></div>';
-    $('#add-cust').addEventListener('click', function(){ modal('<h2>Add Customer</h2><div class="field"><label>Name</label><input id="c-name"></div><div class="field"><label>Email</label><input id="c-email"></div><div class="field"><label>Password</label><input id="c-pass"></div><button class="btn btn-primary" id="c-save">Create + Provision DB</button>'); $('#c-save').addEventListener('click', function(){ api('/api/admin/customers','POST',{name:$('#c-name').value,email:$('#c-email').value,password:$('#c-pass').value}).then(function(r){ closeModal(); toast('Provisioned on key: '+r.key); viewCustomers(); }); }); });
-    document.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){ if(confirm('Delete customer?')) api('/api/admin/customers/'+b.dataset.del,'DELETE').then(viewCustomers); }); });
-  });
-}
-var curDb = null;
-function viewConsole(){
-  api('/api/databases').then(function(dbs){
-    $('#content').innerHTML = '<div class="header"><h1>SQL Console</h1><select id="db-sel" style="padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text)">'+dbs.map(function(d){return '<option value="'+d.id+'">'+d.name+'</option>';}).join('')+'</select></div>'
-      +'<div class="terminal"><div class="term-body" id="term"></div><div class="term-in"><span style="color:var(--accent)">=#</span><input id="sql" placeholder="SELECT * FROM ..."><button class="btn btn-primary" id="run">Run</button></div></div>';
-    curDb = dbs.length ? dbs[0].id : null;
-    $('#db-sel').addEventListener('change', function(e){ curDb = e.target.value; });
-    function run(){ var sql=$('#sql').value; if(!sql||!curDb)return; $('#term').innerHTML += '<div style="color:var(--accent)">=> '+sql+'</div>'; $('#sql').value='';
-      api('/api/query'+(ROLE==='admin'?'?tenant='+curDb:''),'POST',{sql:sql, tenantId:curDb}).then(function(r){ $('#term').innerHTML += '<div>'+(r.error?('<span style="color:var(--red)">'+r.error+'</span>'):(r.message+' '+(r.rows?('('+r.rows.length+' rows) '+JSON.stringify(r.rows.slice(0,5)):''))+(r.key?(' <span style="color:var(--text3)">[key:'+r.key+']</span>'):'')))+'</div>'; $('#term').scrollTop=1e9; }); }
-    $('#run').addEventListener('click', run); $('#sql').addEventListener('keydown', function(e){ if(e.key==='Enter') run(); });
-  });
-}
-function viewPanel(){
-  $('#content').innerHTML = '<div class="header"><h1>NE7 Panel — Full Stack</h1></div>'
-    +'<div class="arch-card"><h3>Architecture (CF + Drime)</h3><p><b>Cloudflare Worker</b> = the brain. <b>KV</b> = keyring (Drime keys, admins, customers, signing secret). <b>Drime</b> = warehouse (customer data).</p></div>'
-    +'<div class="arch-card"><h3>Inverted Postgres</h3><p>TCP socket lives client-side. Hyperwire Agent binds localhost:5432 and tunnels wire bytes over WebSocket to the Worker.</p>'
-    +'<div class="flow">[psql / DBeaver]\\n   |  TCP (localhost:5432)\\n   v\\n[Hyperwire Agent]\\n   |  WebSocket\\n   v\\n[CF Worker /cable] -> Executor -> Drime</div></div>'
-    +'<div class="arch-card"><h3>Full Source Code</h3><p>Every file that powers this platform.</p><div class="src-wrap"><div class="src-list" id="src-list"></div><div class="src-view"><pre id="src-code">Select a file...</pre></div></div></div>';
-  api('/api/admin/source').then(function(src){ var names=Object.keys(src); $('#src-list').innerHTML = names.map(function(n){return '<div class="src-file" data-f="'+n+'">'+n+'</div>';}).join('');
-    document.querySelectorAll('.src-file').forEach(function(f){ f.addEventListener('click', function(){ document.querySelectorAll('.src-file').forEach(function(x){x.classList.remove('active');}); f.classList.add('active'); $('#src-code').textContent = src[f.dataset.f]; }); });
-  });
-}
-function viewSettings(){
-  $('#content').innerHTML = '<div class="header"><h1>Settings</h1></div>'
-    +'<div class="danger-zone"><h3>⚠ Danger Zone</h3><p>Reset wipes all databases and customers from Drime, but keeps admins and API keys. Cannot be undone.</p><button class="btn btn-danger" id="reset-btn">Reset Platform</button></div>';
-  $('#reset-btn').addEventListener('click', function(){ modal('<h2 style="color:var(--red)">Confirm Reset</h2><p style="color:var(--text3);margin:12px 0">Type <b>RESET</b> to confirm.</p><div class="field"><input id="reset-word" placeholder="RESET"></div><button class="btn btn-danger" id="reset-do" style="width:100%;justify-content:center">Wipe Everything</button>');
-    $('#reset-do').addEventListener('click', function(){ if($('#reset-word').value!=='RESET'){toast('Type RESET to confirm','error');return;} api('/api/admin/reset','POST',{}).then(function(r){ closeModal(); toast('Deleted '+r.deleted+' files.'); }); });
-  });
-}
+function bindModal(){$$('#modal-root [data-close]').forEach(function(b){b.onclick=closeModal;});}
+function showConfirm(t,msg,cb){modal('<h2 style="color:var(--red)">'+t+'</h2><p>'+msg+'</p><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-danger" id="cf-yes">Confirm</button></div>');$('#cf-yes').onclick=function(){closeModal();cb();};}
+api('/api/me').then(function(me){if(me&&me.role){ROLE=me.role;NAME=me.name;enterApp();}else{$('#screen-login').classList.remove('hidden');}});
+setTimeout(function(){$('#boot').classList.add('hidden');},900);
+$('#su-go').onclick=function(){api('/api/setup','POST',{adminEmail:$('#su-email').value,adminPassword:$('#su-pass').value,drimeKey:$('#su-key').value}).then(function(r){if(r.ok){toast('Initialized! Sign in.');$('#screen-setup').classList.add('hidden');$('#screen-login').classList.remove('hidden');}else toast(r.error||'Failed');});};
+$('#li-go').onclick=function(){api('/api/login','POST',{email:$('#li-email').value,password:$('#li-pass').value}).then(function(r){if(r.token){TOKEN=r.token;ROLE=r.role;NAME=r.name;localStorage.setItem('ne7_token',TOKEN);enterApp();}else toast(r.error||'Login failed');});};
+function enterApp(){$('#screen-setup').classList.add('hidden');$('#screen-login').classList.add('hidden');$('#app').classList.remove('hidden');buildNav();nav(ROLE==='admin'?'overview':'databases');}
+$('#menu-btn').onclick=function(){$('#sidebar').classList.add('open');$('#sidebar-backdrop').classList.add('active');};
+$('#sidebar-backdrop').onclick=function(){$('#sidebar').classList.remove('open');$('#sidebar-backdrop').classList.remove('active');};
+var VIEWS=['overview','databases','keys','admins','customers','console','panel','settings'];
+function buildNav(){var items=ROLE==='admin'?VIEWS:['databases','console'];$('#nav').innerHTML=items.map(function(v){return '<div class="nav-item" data-v="'+v+'">'+v.toUpperCase()+'</div>';}).join('')+'<div class="nav-sep">Session</div><div class="nav-item" id="logout">Logout</div>';$$('#nav .nav-item').forEach(function(n){n.onclick=function(){if(n.id==='logout'){localStorage.removeItem('ne7_token');location.reload();}nav(n.dataset.v);};});}
+function nav(v){$$('#nav .nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.v===v);});$('#sidebar').classList.remove('open');$('#sidebar-backdrop').classList.remove('active');
+if(v==='overview')viewOverview();if(v==='databases')viewDatabases();if(v==='keys')viewKeys();if(v==='admins')viewAdmins();if(v==='customers')viewCustomers();if(v==='console')viewConsole();if(v==='panel')viewPanel();if(v==='settings')viewSettings();}
+function viewOverview(){api('/api/admin/storage').then(function(s){$('#content').innerHTML='<div class="header"><h1>Overview</h1></div><div class="bento">'
++'<div class="card span-3 stat-card"><div class="stat-icon purple">DB</div><div class="stat-value">'+s.rows.length+'</div><div class="stat-label">API Keys</div></div>'
++'<div class="card span-3 stat-card"><div class="stat-icon green">T</div><div class="stat-value">'+s.grandTotalGB+' GB</div><div class="stat-label">Grand Total</div></div>'
++'<div class="card span-3 stat-card"><div class="stat-icon amber">U</div><div class="stat-value">'+s.grandUsedGB+' GB</div><div class="stat-label">Grand Used</div></div>'
++'<div class="card span-3 stat-card"><div class="stat-icon red">B</div><div class="stat-value">'+s.grandBalanceGB+' GB</div><div class="stat-label">Grand Balance</div></div></div>'
++'<div class="card"><div class="section-title">Storage per API Key</div><div class="table-wrap"><table><tr><th>Key</th><th>Status</th><th>Capacity</th><th>Used</th><th>Balance</th></tr>'
++s.rows.map(function(r){return '<tr><td>'+r.nickname+'</td><td><span class="badge '+(r.status==='HEALTHY'?'badge-green':'badge-red')+'">'+r.status+'</span></td><td>'+r.capacityGB+' GB</td><td>'+r.usedGB+' GB</td><td>'+r.balanceGB+' GB</td></tr>';}).join('')+'</table></div></div>';});}
+function viewDatabases(){api('/api/databases').then(function(d){$('#content').innerHTML='<div class="header"><h1>'+(ROLE==='admin'?'All Databases':'My Databases')+'</h1><div class="header-actions"><button class="btn btn-primary" id="add-db">+ New Database</button></div></div><div class="db-grid">'
++(d.length?d.map(function(x){return '<div class="db-card"><div class="db-card-top"><div class="db-name">'+x.name+'</div><div class="db-status">Active</div></div><div class="db-meta"><span>'+x.tables+' tables</span>'+(x.key?'<span>key: '+x.key+'</span>':'')+'</div></div>';}).join(''):'<div class="card">No databases yet. You are the controller — create one.</div>')+'</div>';
+var b=$('#add-db');if(b)b.onclick=function(){modal('<h2>Create Database</h2><div class="form-group"><label class="form-label">Name</label><input class="form-input" id="nd-name"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="nd-go">Create</button></div>');$('#nd-go').onclick=function(){api('/api/admin/customers','POST',{name:$('#nd-name').value,email:$('#nd-name').value+'@internal',password:Math.random().toString(36).slice(2)}).then(function(r){closeModal();toast('Database created');viewDatabases();});};};});}
+function viewKeys(){api('/api/admin/keys').then(function(k){$('#content').innerHTML='<div class="header"><h1>API Keys</h1><div class="header-actions"><button class="btn btn-primary" id="add-key">+ Add Key</button></div></div><div class="table-wrap"><table><tr><th>Nickname</th><th>API Key</th><th>Status</th><th>Capacity</th><th>Actions</th></tr>'
++k.map(function(x){return '<tr><td>'+x.nickname+'</td><td data-full="'+x.id+'">'+x.key+'</td><td><span class="badge '+(x.status==='HEALTHY'?'badge-green':'badge-red')+'">'+(x.status||'UNKNOWN')+'</span></td><td>'+x.capacityGB+' GB</td><td>'
++'<button class="icon-btn" data-eye="'+x.id+'">E</button><button class="icon-btn" data-copy="'+x.id+'">C</button><button class="icon-btn danger" data-del="'+x.id+'" data-nick="'+x.nickname+'">X</button></td></tr>';}).join('')+'</table></div>';
+$('#add-key').onclick=function(){modal('<h2>Add API Key</h2><div class="form-group"><label class="form-label">Nickname</label><input class="form-input" id="k-nick"></div><div class="form-group"><label class="form-label">Key</label><input class="form-input" id="k-val"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="k-go">Save</button></div>');$('#k-go').onclick=function(){api('/api/admin/keys','POST',{nickname:$('#k-nick').value,key:$('#k-val').value}).then(function(r){closeModal();toast('Key added');viewKeys();});};};
+$$('#content [data-eye]').forEach(function(b){b.onclick=function(){var id=b.dataset.eye;var td=document.querySelector('[data-full="'+id+'"]');api('/api/admin/keys/'+id+'/reveal').then(function(r){td.textContent=td.dataset.shown?r.key.slice(0,6)+'••••••••'+r.key.slice(-4):r.key;td.dataset.shown=td.dataset.shown?'':'1';});};});
+$$('#content [data-copy]').forEach(function(b){b.onclick=function(){api('/api/admin/keys/'+b.dataset.copy+'/reveal').then(function(r){if(navigator.clipboard)navigator.clipboard.writeText(r.key);toast('Copied');});};});
+$$('#content [data-del]').forEach(function(b){b.onclick=function(){showConfirm('Delete key?','Remove '+b.dataset.nick,function(){api('/api/admin/keys/'+b.dataset.del,'DELETE').then(viewKeys);});};};});}
+function viewAdmins(){api('/api/admin/admins').then(function(l){$('#content').innerHTML='<div class="header"><h1>Admins</h1><div class="header-actions"><button class="btn btn-primary" id="add-admin">+ Add Admin</button></div></div><div class="table-wrap"><table><tr><th>Email</th><th>Actions</th></tr>'
++l.map(function(e){return '<tr><td>'+e+'</td><td><button class="icon-btn danger" data-del="'+encodeURIComponent(e)+'">X</button></td></tr>';}).join('')+'</table></div>';
+$('#add-admin').onclick=function(){modal('<h2>Add Admin</h2><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="a-email"></div><div class="form-group"><label class="form-label">Password</label><input class="form-input" id="a-pass"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="a-go">Save</button></div>');$('#a-go').onclick=function(){api('/api/admin/admins','POST',{email:$('#a-email').value,password:$('#a-pass').value}).then(function(r){closeModal();viewAdmins();});};};
+$$('#content [data-del]').forEach(function(b){b.onclick=function(){showConfirm('Remove admin?','This admin loses access.',function(){api('/api/admin/admins/'+b.dataset.del,'DELETE').then(viewAdmins);});};};});}
+function viewCustomers(){api('/api/admin/customers').then(function(l){$('#content').innerHTML='<div class="header"><h1>Customers</h1><div class="header-actions"><button class="btn btn-primary" id="add-cust">+ Add Customer</button></div></div><div class="table-wrap"><table><tr><th>Name</th><th>Email</th><th>Tenant</th><th>Actions</th></tr>'
++l.map(function(c){return '<tr><td>'+c.name+'</td><td>'+c.email+'</td><td>'+c.tenantId+'</td><td><button class="icon-btn danger" data-del="'+c.id+'">X</button></td></tr>';}).join('')+'</table></div>';
+$('#add-cust').onclick=function(){modal('<h2>Add Customer</h2><div class="form-group"><label class="form-label">Name</label><input class="form-input" id="c-name"></div><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email"></div><div class="form-group"><label class="form-label">Password</label><input class="form-input" id="c-pass"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="c-go">Create + Provision</button></div>');$('#c-go').onclick=function(){api('/api/admin/customers','POST',{name:$('#c-name').value,email:$('#c-email').value,password:$('#c-pass').value}).then(function(r){closeModal();toast('Provisioned on key: '+r.key);viewCustomers();});};};
+$$('#content [data-del]').forEach(function(b){b.onclick=function(){showConfirm('Delete customer?','This removes their access.',function(){api('/api/admin/customers/'+b.dataset.del,'DELETE').then(viewCustomers);});};};});}
+function viewConsole(){$('#content').innerHTML='<div class="header"><h1>SQL Console</h1></div><div class="terminal"><div class="terminal-body" id="term"></div><div style="padding:12px 16px;border-top:1px solid var(--border)"><div class="sql-input-wrap"><span class="sql-prompt">ne7sql=#</span><input class="sql-input" id="sql" placeholder="SELECT * FROM ..."><button class="btn btn-primary btn-sm" id="run">Run</button></div></div></div>';
+function run(){var s=$('#sql').value;if(!s)return;$('#term').innerHTML+='<div class="log-line"><span class="log-module">=&gt;</span><span class="log-msg">'+s+'</span></div>';$('#sql').value='';api('/api/query','POST',{sql:s}).then(function(r){$('#term').innerHTML+='<div class="log-line"><span class="log-level '+(r.error?'ERROR':'INFO')+'">'+(r.error||r.message||'OK')+'</span><span class="log-msg">'+(r.rows?NL+JSON.stringify(r.rows.slice(0,10),null,1):'')+'</span></div>';$('#term').scrollTop=1e9;});}
+$('#run').onclick=run;$('#sql').onkeydown=function(e){if(e.key==='Enter')run();};}
+function viewPanel(){$('#content').innerHTML='<div class="header"><h1>NE7 Panel — Full Stack</h1></div>'
++'<div class="arch-card"><h3>Architecture (CF + Drime)</h3><p><b>Cloudflare Worker</b> = the brain. <b>KV</b> = keyring (Drime keys, admins, customers, signing secret). <b>Drime</b> = warehouse (customer data). Zero VPS.</p></div>'
++'<div class="arch-card"><h3>Inverted Postgres</h3><p>TCP socket lives client-side. The Hyperwire Agent binds localhost:5432 and tunnels Postgres wire bytes over WebSocket to the Worker.</p><div class="flow">[psql / DBeaver]'+NL+'   |  TCP (localhost:5432)'+NL+'   v'+NL+'[Hyperwire Agent]'+NL+'   |  WebSocket'+NL+'   v'+NL+'[CF Worker /cable] -&gt; Executor -&gt; Drime</div></div>'
++'<div class="arch-card"><h3>Full Source Code</h3><p>Every file that powers this platform.</p><div class="src-wrap"><div class="src-list" id="src-list"></div><div class="src-view"><pre id="src-code">Select a file...</pre></div></div></div>';
+api('/api/admin/source').then(function(src){var names=Object.keys(src);$('#src-list').innerHTML=names.map(function(n){return '<div class="src-file" data-f="'+n+'">'+n+'</div>';}).join('');$$('#src-list .src-file').forEach(function(f){f.onclick=function(){$$('#src-list .src-file').forEach(function(x){x.classList.remove('active');});f.classList.add('active');$('#src-code').textContent=src[f.dataset.f];};});});}
+function viewSettings(){$('#content').innerHTML='<div class="header"><h1>Settings</h1></div><div class="danger-zone"><h3>Danger Zone</h3><p>Reset wipes all databases and customers from Drime, but keeps admins and API keys. Cannot be undone.</p><button class="btn btn-danger" id="reset-btn">Reset Platform</button></div>';
+$('#reset-btn').onclick=function(){showConfirm('Confirm Reset','Type RESET in the next prompt to wipe everything.',function(){var w=prompt('Type RESET to confirm');if(w==='RESET'){api('/api/admin/reset','POST',{}).then(function(r){toast('Deleted '+r.deleted+' files.');});}else toast('Aborted');});};}
 })();
 </script></body></html>`;
