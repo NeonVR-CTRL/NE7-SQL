@@ -12,7 +12,7 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 @keyframes aur{0%{background-position:0% 0}100%{background-position:200% 0}}
 .boot{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .6s,visibility .6s}
 .boot.hidden{opacity:0;visibility:hidden;pointer-events:none}
-.boot-logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;animation:bp 1.6s infinite}
+.boot-logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));animation:bp 1.6s infinite}
 @keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .boot-text{font-size:.8rem;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;font-weight:600}
 .screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;z-index:2}
@@ -33,14 +33,13 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .nav-item:hover{background:rgba(255,255,255,.05);color:var(--text)}
 .nav-item.active{background:rgba(129,140,248,.15);color:var(--accent)}
 .nav-sep{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:14px 12px 6px}
-.nav-badge{margin-left:auto;background:var(--surface3);color:var(--text3);font-size:.65rem;padding:2px 7px;border-radius:5px;font-weight:600}
 .sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
 .status-pill{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--text2)}
 .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pul 2s infinite}
 @keyframes pul{0%,100%{opacity:1}50%{opacity:.4}}
 .main{flex:1;margin-left:230px;padding:28px 36px;max-width:1300px}
 .mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;height:56px;background:rgba(6,6,8,.85);border-bottom:1px solid var(--border);z-index:90;align-items:center;justify-content:space-between;padding:0 16px}
-.menu-btn{background:none;border:none;color:var(--text);cursor:pointer;padding:8px}
+.menu-btn{background:none;border:none;color:var(--text);cursor:pointer;padding:8px;font-size:1.2rem}
 .mobile-logo{font-weight:700}
 .sidebar-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:95;opacity:0;visibility:hidden;transition:.3s}
 .sidebar-backdrop.active{opacity:1;visibility:visible}
@@ -54,12 +53,7 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .stat-card{display:flex;flex-direction:column;gap:12px}
 .stat-value{font-size:2rem;font-weight:800}
 .stat-label{font-size:.75rem;color:var(--text3)}
-.stat-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
-.stat-icon.purple{background:rgba(129,140,248,.12);color:var(--accent)}.stat-icon.green{background:rgba(52,211,153,.12);color:var(--green)}.stat-icon.amber{background:rgba(251,191,36,.12);color:var(--amber)}.stat-icon.red{background:rgba(248,113,113,.12);color:var(--red)}
 .section-title{font-size:1rem;font-weight:700;margin-bottom:16px}
-.group-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.group-tab{padding:7px 14px;border-radius:20px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2)}
-.group-tab.active{background:rgba(129,140,248,.15);border-color:var(--accent);color:var(--accent)}
 .db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
 .db-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.3s}
 .db-card:hover{border-color:var(--accent)}
@@ -67,10 +61,6 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .db-name{font-weight:700;font-size:.9rem;font-family:ui-monospace,monospace;word-break:break-all}
 .db-status{font-size:.6rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:rgba(52,211,153,.1);color:var(--green)}
 .db-meta{display:flex;gap:16px;font-size:.72rem;color:var(--text3);margin-bottom:16px;flex-wrap:wrap}
-.db-storage-bar{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden}
-.db-storage-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.db-storage-text{display:flex;justify-content:space-between;font-size:.65rem;color:var(--text3);margin-top:6px}
-.db-actions{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:640px}
 th{text-align:left;padding:12px 20px;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);background:var(--surface2)}
@@ -97,8 +87,6 @@ td{padding:14px 20px;font-size:.82rem;border-bottom:1px solid var(--border);font
 .form-input{width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.85rem;outline:none}
 .form-label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:6px}
 .form-group{margin-bottom:18px}
-.dsn-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:ui-monospace,monospace;font-size:.75rem;word-break:break-all;color:var(--accent);display:flex;gap:8px;justify-content:space-between;align-items:center}
-.dsn-box button{background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:6px;font-size:.7rem}
 .danger-zone{border:1px solid rgba(248,113,113,.35);border-radius:var(--radius);padding:22px;background:rgba(248,113,113,.04)}
 .danger-zone h3{color:var(--red);margin-bottom:6px}.danger-zone p{color:var(--text3);font-size:.85rem;margin-bottom:14px}
 .arch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px}
@@ -120,7 +108,7 @@ td{padding:14px 20px;font-size:.82rem;border-bottom:1px solid var(--border);font
 <canvas id="bg-canvas"></canvas><div class="aurora"></div>
 <div class="boot" id="boot"><div class="boot-logo"></div><div class="boot-text">Initializing NE7-SQL</div></div>
 <div class="mobile-topbar"><button class="menu-btn" id="menu-btn">☰</button><div class="mobile-logo">NE7-SQL</div><div style="width:38px"></div></div>
-<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+<div class="sidebar-backdrop" id="backdrop"></div>
 <div class="screen hidden" id="screen-setup"><div class="auth-card"><h1>NE7-SQL Setup</h1><p>First run — create your admin account and connect Drime storage.</p>
 <div class="field"><label>Admin Email</label><input id="su-email" type="email"></div>
 <div class="field"><label>Admin Password</label><input id="su-pass" type="password"></div>
@@ -139,68 +127,192 @@ td{padding:14px 20px;font-size:.82rem;border-bottom:1px solid var(--border);font
 <script>
 (function(){
 'use strict';
-var NL=String.fromCharCode(10);
-var TOKEN=localStorage.getItem('ne7_token')||'';
-var ROLE='',NAME='';
-var cv=document.getElementById('bg-canvas'),cx=cv.getContext('2d'),W,H,orbs=[];
-function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
-addEventListener('resize',rs);rs();
-orbs=[{x:.2,y:.25,r:Math.max(W,H)*.4,c:'129,140,248',a:.10,vx:.00025,vy:.0002},{x:.8,y:.7,r:Math.max(W,H)*.45,c:'192,132,252',a:.08,vx:-.0002,vy:.00028},{x:.5,y:.95,r:Math.max(W,H)*.38,c:'56,189,248',a:.07,vx:.00022,vy:-.0002}];
-function draw(){cx.clearRect(0,0,W,H);for(var i=0;i<orbs.length;i++){var o=orbs[i];o.x+=o.vx;o.y+=o.vy;if(o.x<-.1||o.x>1.1)o.vx*=-1;if(o.y<-.1||o.y>1.1)o.vy*=-1;var g=cx.createRadialGradient(o.x*W,o.y*H,0,o.x*W,o.y*H,o.r);g.addColorStop(0,'rgba('+o.c+','+o.a+')');g.addColorStop(1,'rgba('+o.c+',0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);}requestAnimationFrame(draw);}
-draw();
-function $(s){return document.querySelector(s);}
-function $$(s){return document.querySelectorAll(s);}
-function api(p,m,b){var h={'Content-Type':'application/json'};if(TOKEN)h['Authorization']='Bearer '+TOKEN;return fetch(p,{method:m||'GET',headers:h,body:b?JSON.stringify(b):undefined}).then(function(r){return r.json();});}
-function toast(m,t){var d=document.createElement('div');d.className='toast';d.textContent=m;$('#toasts').appendChild(d);setTimeout(function(){d.remove();},3500);}
-function modal(h){$('#modal-root').innerHTML='<div class="modal-overlay active"><div class="modal">'+h+'</div></div>';bindModal();}
-function closeModal(){$('#modal-root').innerHTML='';}
-function bindModal(){$$('#modal-root [data-close]').forEach(function(b){b.onclick=closeModal;});}
-function showConfirm(t,msg,cb){modal('<h2 style="color:var(--red)">'+t+'</h2><p>'+msg+'</p><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-danger" id="cf-yes">Confirm</button></div>');$('#cf-yes').onclick=function(){closeModal();cb();};}
-api('/api/me').then(function(me){if(me&&me.role){ROLE=me.role;NAME=me.name;enterApp();}else{$('#screen-login').classList.remove('hidden');}});
-setTimeout(function(){$('#boot').classList.add('hidden');},900);
-$('#su-go').onclick=function(){api('/api/setup','POST',{adminEmail:$('#su-email').value,adminPassword:$('#su-pass').value,drimeKey:$('#su-key').value}).then(function(r){if(r.ok){toast('Initialized! Sign in.');$('#screen-setup').classList.add('hidden');$('#screen-login').classList.remove('hidden');}else toast(r.error||'Failed');});};
-$('#li-go').onclick=function(){api('/api/login','POST',{email:$('#li-email').value,password:$('#li-pass').value}).then(function(r){if(r.token){TOKEN=r.token;ROLE=r.role;NAME=r.name;localStorage.setItem('ne7_token',TOKEN);enterApp();}else toast(r.error||'Login failed');});};
-function enterApp(){$('#screen-setup').classList.add('hidden');$('#screen-login').classList.add('hidden');$('#app').classList.remove('hidden');buildNav();nav(ROLE==='admin'?'overview':'databases');}
-$('#menu-btn').onclick=function(){$('#sidebar').classList.add('open');$('#sidebar-backdrop').classList.add('active');};
-$('#sidebar-backdrop').onclick=function(){$('#sidebar').classList.remove('open');$('#sidebar-backdrop').classList.remove('active');};
-var VIEWS=['overview','databases','keys','admins','customers','console','panel','settings'];
-function buildNav(){var items=ROLE==='admin'?VIEWS:['databases','console'];$('#nav').innerHTML=items.map(function(v){return '<div class="nav-item" data-v="'+v+'">'+v.toUpperCase()+'</div>';}).join('')+'<div class="nav-sep">Session</div><div class="nav-item" id="logout">Logout</div>';$$('#nav .nav-item').forEach(function(n){n.onclick=function(){if(n.id==='logout'){localStorage.removeItem('ne7_token');location.reload();}nav(n.dataset.v);};});}
-function nav(v){$$('#nav .nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.v===v);});$('#sidebar').classList.remove('open');$('#sidebar-backdrop').classList.remove('active');
-if(v==='overview')viewOverview();if(v==='databases')viewDatabases();if(v==='keys')viewKeys();if(v==='admins')viewAdmins();if(v==='customers')viewCustomers();if(v==='console')viewConsole();if(v==='panel')viewPanel();if(v==='settings')viewSettings();}
-function viewOverview(){api('/api/admin/storage').then(function(s){$('#content').innerHTML='<div class="header"><h1>Overview</h1></div><div class="bento">'
-+'<div class="card span-3 stat-card"><div class="stat-icon purple">DB</div><div class="stat-value">'+s.rows.length+'</div><div class="stat-label">API Keys</div></div>'
-+'<div class="card span-3 stat-card"><div class="stat-icon green">T</div><div class="stat-value">'+s.grandTotalGB+' GB</div><div class="stat-label">Grand Total</div></div>'
-+'<div class="card span-3 stat-card"><div class="stat-icon amber">U</div><div class="stat-value">'+s.grandUsedGB+' GB</div><div class="stat-label">Grand Used</div></div>'
-+'<div class="card span-3 stat-card"><div class="stat-icon red">B</div><div class="stat-value">'+s.grandBalanceGB+' GB</div><div class="stat-label">Grand Balance</div></div></div>'
-+'<div class="card"><div class="section-title">Storage per API Key</div><div class="table-wrap"><table><tr><th>Key</th><th>Status</th><th>Capacity</th><th>Used</th><th>Balance</th></tr>'
-+s.rows.map(function(r){return '<tr><td>'+r.nickname+'</td><td><span class="badge '+(r.status==='HEALTHY'?'badge-green':'badge-red')+'">'+r.status+'</span></td><td>'+r.capacityGB+' GB</td><td>'+r.usedGB+' GB</td><td>'+r.balanceGB+' GB</td></tr>';}).join('')+'</table></div></div>';});}
-function viewDatabases(){api('/api/databases').then(function(d){$('#content').innerHTML='<div class="header"><h1>'+(ROLE==='admin'?'All Databases':'My Databases')+'</h1><div class="header-actions"><button class="btn btn-primary" id="add-db">+ New Database</button></div></div><div class="db-grid">'
-+(d.length?d.map(function(x){return '<div class="db-card"><div class="db-card-top"><div class="db-name">'+x.name+'</div><div class="db-status">Active</div></div><div class="db-meta"><span>'+x.tables+' tables</span>'+(x.key?'<span>key: '+x.key+'</span>':'')+'</div></div>';}).join(''):'<div class="card">No databases yet. You are the controller — create one.</div>')+'</div>';
-var b=$('#add-db');if(b)b.onclick=function(){modal('<h2>Create Database</h2><div class="form-group"><label class="form-label">Name</label><input class="form-input" id="nd-name"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="nd-go">Create</button></div>');$('#nd-go').onclick=function(){api('/api/admin/customers','POST',{name:$('#nd-name').value,email:$('#nd-name').value+'@internal',password:Math.random().toString(36).slice(2)}).then(function(r){closeModal();toast('Database created');viewDatabases();});};};});}
-function viewKeys(){api('/api/admin/keys').then(function(k){$('#content').innerHTML='<div class="header"><h1>API Keys</h1><div class="header-actions"><button class="btn btn-primary" id="add-key">+ Add Key</button></div></div><div class="table-wrap"><table><tr><th>Nickname</th><th>API Key</th><th>Status</th><th>Capacity</th><th>Actions</th></tr>'
-+k.map(function(x){return '<tr><td>'+x.nickname+'</td><td data-full="'+x.id+'">'+x.key+'</td><td><span class="badge '+(x.status==='HEALTHY'?'badge-green':'badge-red')+'">'+(x.status||'UNKNOWN')+'</span></td><td>'+x.capacityGB+' GB</td><td>'
-+'<button class="icon-btn" data-eye="'+x.id+'">E</button><button class="icon-btn" data-copy="'+x.id+'">C</button><button class="icon-btn danger" data-del="'+x.id+'" data-nick="'+x.nickname+'">X</button></td></tr>';}).join('')+'</table></div>';
-$('#add-key').onclick=function(){modal('<h2>Add API Key</h2><div class="form-group"><label class="form-label">Nickname</label><input class="form-input" id="k-nick"></div><div class="form-group"><label class="form-label">Key</label><input class="form-input" id="k-val"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="k-go">Save</button></div>');$('#k-go').onclick=function(){api('/api/admin/keys','POST',{nickname:$('#k-nick').value,key:$('#k-val').value}).then(function(r){closeModal();toast('Key added');viewKeys();});};};
-$$('#content [data-eye]').forEach(function(b){b.onclick=function(){var id=b.dataset.eye;var td=document.querySelector('[data-full="'+id+'"]');api('/api/admin/keys/'+id+'/reveal').then(function(r){td.textContent=td.dataset.shown?r.key.slice(0,6)+'••••••••'+r.key.slice(-4):r.key;td.dataset.shown=td.dataset.shown?'':'1';});};});
-$$('#content [data-copy]').forEach(function(b){b.onclick=function(){api('/api/admin/keys/'+b.dataset.copy+'/reveal').then(function(r){if(navigator.clipboard)navigator.clipboard.writeText(r.key);toast('Copied');});};});
-$$('#content [data-del]').forEach(function(b){b.onclick=function(){showConfirm('Delete key?','Remove '+b.dataset.nick,function(){api('/api/admin/keys/'+b.dataset.del,'DELETE').then(viewKeys);});};};});}
-function viewAdmins(){api('/api/admin/admins').then(function(l){$('#content').innerHTML='<div class="header"><h1>Admins</h1><div class="header-actions"><button class="btn btn-primary" id="add-admin">+ Add Admin</button></div></div><div class="table-wrap"><table><tr><th>Email</th><th>Actions</th></tr>'
-+l.map(function(e){return '<tr><td>'+e+'</td><td><button class="icon-btn danger" data-del="'+encodeURIComponent(e)+'">X</button></td></tr>';}).join('')+'</table></div>';
-$('#add-admin').onclick=function(){modal('<h2>Add Admin</h2><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="a-email"></div><div class="form-group"><label class="form-label">Password</label><input class="form-input" id="a-pass"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="a-go">Save</button></div>');$('#a-go').onclick=function(){api('/api/admin/admins','POST',{email:$('#a-email').value,password:$('#a-pass').value}).then(function(r){closeModal();viewAdmins();});};};
-$$('#content [data-del]').forEach(function(b){b.onclick=function(){showConfirm('Remove admin?','This admin loses access.',function(){api('/api/admin/admins/'+b.dataset.del,'DELETE').then(viewAdmins);});};};});}
-function viewCustomers(){api('/api/admin/customers').then(function(l){$('#content').innerHTML='<div class="header"><h1>Customers</h1><div class="header-actions"><button class="btn btn-primary" id="add-cust">+ Add Customer</button></div></div><div class="table-wrap"><table><tr><th>Name</th><th>Email</th><th>Tenant</th><th>Actions</th></tr>'
-+l.map(function(c){return '<tr><td>'+c.name+'</td><td>'+c.email+'</td><td>'+c.tenantId+'</td><td><button class="icon-btn danger" data-del="'+c.id+'">X</button></td></tr>';}).join('')+'</table></div>';
-$('#add-cust').onclick=function(){modal('<h2>Add Customer</h2><div class="form-group"><label class="form-label">Name</label><input class="form-input" id="c-name"></div><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email"></div><div class="form-group"><label class="form-label">Password</label><input class="form-input" id="c-pass"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="c-go">Create + Provision</button></div>');$('#c-go').onclick=function(){api('/api/admin/customers','POST',{name:$('#c-name').value,email:$('#c-email').value,password:$('#c-pass').value}).then(function(r){closeModal();toast('Provisioned on key: '+r.key);viewCustomers();});};};
-$$('#content [data-del]').forEach(function(b){b.onclick=function(){showConfirm('Delete customer?','This removes their access.',function(){api('/api/admin/customers/'+b.dataset.del,'DELETE').then(viewCustomers);});};};});}
-function viewConsole(){$('#content').innerHTML='<div class="header"><h1>SQL Console</h1></div><div class="terminal"><div class="terminal-body" id="term"></div><div style="padding:12px 16px;border-top:1px solid var(--border)"><div class="sql-input-wrap"><span class="sql-prompt">ne7sql=#</span><input class="sql-input" id="sql" placeholder="SELECT * FROM ..."><button class="btn btn-primary btn-sm" id="run">Run</button></div></div></div>';
-function run(){var s=$('#sql').value;if(!s)return;$('#term').innerHTML+='<div class="log-line"><span class="log-module">=&gt;</span><span class="log-msg">'+s+'</span></div>';$('#sql').value='';api('/api/query','POST',{sql:s}).then(function(r){$('#term').innerHTML+='<div class="log-line"><span class="log-level '+(r.error?'ERROR':'INFO')+'">'+(r.error||r.message||'OK')+'</span><span class="log-msg">'+(r.rows?NL+JSON.stringify(r.rows.slice(0,10),null,1):'')+'</span></div>';$('#term').scrollTop=1e9;});}
-$('#run').onclick=run;$('#sql').onkeydown=function(e){if(e.key==='Enter')run();};}
-function viewPanel(){$('#content').innerHTML='<div class="header"><h1>NE7 Panel — Full Stack</h1></div>'
-+'<div class="arch-card"><h3>Architecture (CF + Drime)</h3><p><b>Cloudflare Worker</b> = the brain. <b>KV</b> = keyring (Drime keys, admins, customers, signing secret). <b>Drime</b> = warehouse (customer data). Zero VPS.</p></div>'
-+'<div class="arch-card"><h3>Inverted Postgres</h3><p>TCP socket lives client-side. The Hyperwire Agent binds localhost:5432 and tunnels Postgres wire bytes over WebSocket to the Worker.</p><div class="flow">[psql / DBeaver]'+NL+'   |  TCP (localhost:5432)'+NL+'   v'+NL+'[Hyperwire Agent]'+NL+'   |  WebSocket'+NL+'   v'+NL+'[CF Worker /cable] -&gt; Executor -&gt; Drime</div></div>'
-+'<div class="arch-card"><h3>Full Source Code</h3><p>Every file that powers this platform.</p><div class="src-wrap"><div class="src-list" id="src-list"></div><div class="src-view"><pre id="src-code">Select a file...</pre></div></div></div>';
-api('/api/admin/source').then(function(src){var names=Object.keys(src);$('#src-list').innerHTML=names.map(function(n){return '<div class="src-file" data-f="'+n+'">'+n+'</div>';}).join('');$$('#src-list .src-file').forEach(function(f){f.onclick=function(){$$('#src-list .src-file').forEach(function(x){x.classList.remove('active');});f.classList.add('active');$('#src-code').textContent=src[f.dataset.f];};});});}
-function viewSettings(){$('#content').innerHTML='<div class="header"><h1>Settings</h1></div><div class="danger-zone"><h3>Danger Zone</h3><p>Reset wipes all databases and customers from Drime, but keeps admins and API keys. Cannot be undone.</p><button class="btn btn-danger" id="reset-btn">Reset Platform</button></div>';
-$('#reset-btn').onclick=function(){showConfirm('Confirm Reset','Type RESET in the next prompt to wipe everything.',function(){var w=prompt('Type RESET to confirm');if(w==='RESET'){api('/api/admin/reset','POST',{}).then(function(r){toast('Deleted '+r.deleted+' files.');});}else toast('Aborted');});};}
+var NL = String.fromCharCode(10);
+var TOKEN = localStorage.getItem('ne7_token') || '';
+var ROLE = '';
+function $(s){ return document.querySelector(s); }
+function $$(s){ return document.querySelectorAll(s); }
+function api(p, m, b){
+  var h = {'Content-Type':'application/json'};
+  if (TOKEN) { h['Authorization'] = 'Bearer ' + TOKEN; }
+  return fetch(p, {method: m || 'GET', headers: h, body: b ? JSON.stringify(b) : undefined}).then(function(r){ return r.json(); });
+}
+function toast(m){ var t = document.createElement('div'); t.className = 'toast'; t.textContent = m; $('#toasts').appendChild(t); setTimeout(function(){ t.remove(); }, 3500); }
+function modal(h){ $('#modal-root').innerHTML = '<div class="modal-overlay active"><div class="modal">' + h + '</div></div>'; $$('[data-close]').forEach(function(b){ b.onclick = closeModal; }); }
+function closeModal(){ $('#modal-root').innerHTML = ''; }
+function confirmBox(t, msg, cb){ modal('<h2 style="color:var(--red)">' + t + '</h2><p>' + msg + '</p><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-danger" id="cfy">Confirm</button></div>'); $('#cfy').onclick = function(){ closeModal(); cb(); }; }
+
+api('/api/me').then(function(me){
+  if (me && me.role) { ROLE = me.role; enter(); } else { $('#screen-login').classList.remove('hidden'); }
+});
+setTimeout(function(){ $('#boot').classList.add('hidden'); }, 900);
+
+$('#su-go').onclick = function(){
+  api('/api/setup','POST',{adminEmail:$('#su-email').value, adminPassword:$('#su-pass').value, drimeKey:$('#su-key').value}).then(function(r){
+    if (r.ok) { toast('Initialized! Sign in.'); $('#screen-setup').classList.add('hidden'); $('#screen-login').classList.remove('hidden'); }
+    else { toast(r.error || 'Failed'); }
+  });
+};
+$('#li-go').onclick = function(){
+  api('/api/login','POST',{email:$('#li-email').value, password:$('#li-pass').value}).then(function(r){
+    if (r.token) { TOKEN = r.token; ROLE = r.role; localStorage.setItem('ne7_token', TOKEN); enter(); }
+    else { toast(r.error || 'Login failed'); }
+  });
+};
+function enter(){
+  $('#screen-setup').classList.add('hidden');
+  $('#screen-login').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  buildNav();
+  nav(ROLE === 'admin' ? 'overview' : 'databases');
+}
+$('#menu-btn').onclick = function(){ $('#sidebar').classList.add('open'); $('#backdrop').classList.add('active'); };
+$('#backdrop').onclick = function(){ $('#sidebar').classList.remove('open'); $('#backdrop').classList.remove('active'); };
+
+function buildNav(){
+  var items = ROLE === 'admin' ? ['overview','databases','keys','admins','customers','console','panel','settings'] : ['databases','console'];
+  $('#nav').innerHTML = items.map(function(v){ return '<div class="nav-item" data-v="' + v + '">' + v.toUpperCase() + '</div>'; }).join('') + '<div class="nav-sep">Session</div><div class="nav-item" id="lo">LOGOUT</div>';
+  $$('.nav-item').forEach(function(n){
+    n.onclick = function(){
+      if (n.id === 'lo') { localStorage.removeItem('ne7_token'); location.reload(); }
+      nav(n.getAttribute('data-v'));
+    };
+  });
+}
+function nav(v){
+  $$('.nav-item').forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-v') === v); });
+  $('#sidebar').classList.remove('open');
+  $('#backdrop').classList.remove('active');
+  if (v === 'overview') { vOverview(); }
+  else if (v === 'databases') { vDbs(); }
+  else if (v === 'keys') { vKeys(); }
+  else if (v === 'admins') { vAdmins(); }
+  else if (v === 'customers') { vCust(); }
+  else if (v === 'console') { vConsole(); }
+  else if (v === 'panel') { vPanel(); }
+  else if (v === 'settings') { vSettings(); }
+}
+
+function vOverview(){
+  api('/api/admin/storage').then(function(s){
+    $('#content').innerHTML = '<div class="header"><h1>Overview</h1></div><div class="bento">'
+      + '<div class="card span-3 stat-card"><div class="stat-value">' + s.rows.length + '</div><div class="stat-label">API Keys</div></div>'
+      + '<div class="card span-3 stat-card"><div class="stat-value">' + s.grandTotalGB + ' GB</div><div class="stat-label">Grand Total</div></div>'
+      + '<div class="card span-3 stat-card"><div class="stat-value">' + s.grandUsedGB + ' GB</div><div class="stat-label">Grand Used</div></div>'
+      + '<div class="card span-3 stat-card"><div class="stat-value">' + s.grandBalanceGB + ' GB</div><div class="stat-label">Grand Balance</div></div></div>'
+      + '<div class="card"><div class="section-title">Storage per Key</div><div class="table-wrap"><table><tr><th>Key</th><th>Status</th><th>Cap</th><th>Used</th><th>Balance</th></tr>'
+      + s.rows.map(function(r){ return '<tr><td>' + r.nickname + '</td><td><span class="badge ' + (r.status === 'HEALTHY' ? 'badge-green' : 'badge-red') + '">' + r.status + '</span></td><td>' + r.capacityGB + ' GB</td><td>' + r.usedGB + ' GB</td><td>' + r.balanceGB + ' GB</td></tr>'; }).join('')
+      + '</table></div></div>';
+  });
+}
+function vDbs(){
+  api('/api/databases').then(function(d){
+    $('#content').innerHTML = '<div class="header"><h1>Databases</h1><button class="btn btn-primary" id="adddb">+ New Database</button></div><div class="db-grid">'
+      + (d.length ? d.map(function(x){ return '<div class="db-card"><div class="db-card-top"><div class="db-name">' + x.name + '</div><div class="db-status">Active</div></div><div class="db-meta"><span>' + x.tables + ' tables</span>' + (x.key ? '<span>key: ' + x.key + '</span>' : '') + '</div></div>'; }).join('') : '<div class="card">No databases yet.</div>')
+      + '</div>';
+    var b = $('#adddb');
+    if (b) {
+      b.onclick = function(){
+        modal('<h2>Create Database</h2><div class="form-group"><label class="form-label">Name</label><input class="form-input" id="nd"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="ndg">Create</button></div>');
+        $('#ndg').onclick = function(){
+          api('/api/admin/customers','POST',{name:$('#nd').value, email:$('#nd').value + '@internal', password:Math.random().toString(36).slice(2)}).then(function(){ closeModal(); toast('Created'); vDbs(); });
+        };
+      };
+    }
+  });
+}
+function vKeys(){
+  api('/api/admin/keys').then(function(k){
+    $('#content').innerHTML = '<div class="header"><h1>API Keys</h1><button class="btn btn-primary" id="addk">+ Add Key</button></div><div class="table-wrap"><table><tr><th>Nick</th><th>Key</th><th>Status</th><th>Cap</th><th>Actions</th></tr>'
+      + k.map(function(x){ return '<tr><td>' + x.nickname + '</td><td data-f="' + x.id + '">' + x.key + '</td><td><span class="badge ' + (x.status === 'HEALTHY' ? 'badge-green' : 'badge-red') + '">' + (x.status || 'UNKNOWN') + '</span></td><td>' + x.capacityGB + ' GB</td><td><button class="icon-btn" data-eye="' + x.id + '">E</button><button class="icon-btn" data-copy="' + x.id + '">C</button><button class="icon-btn danger" data-del="' + x.id + '" data-n="' + x.nickname + '">X</button></td></tr>'; }).join('')
+      + '</table></div>';
+    $('#addk').onclick = function(){
+      modal('<h2>Add Key</h2><div class="form-group"><label class="form-label">Nickname</label><input class="form-input" id="kn"></div><div class="form-group"><label class="form-label">Key</label><input class="form-input" id="kv"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="kg">Save</button></div>');
+      $('#kg').onclick = function(){ api('/api/admin/keys','POST',{nickname:$('#kn').value, key:$('#kv').value}).then(function(){ closeModal(); toast('Added'); vKeys(); }); };
+    };
+    $$('[data-eye]').forEach(function(b){
+      b.onclick = function(){
+        var id = b.getAttribute('data-eye');
+        var td = document.querySelector('[data-f="' + id + '"]');
+        api('/api/admin/keys/' + id + '/reveal').then(function(r){
+          if (td.getAttribute('data-s')) { td.textContent = r.key.slice(0,6) + '...' + r.key.slice(-4); td.setAttribute('data-s',''); }
+          else { td.textContent = r.key; td.setAttribute('data-s','1'); }
+        });
+      };
+    });
+    $$('[data-copy]').forEach(function(b){
+      b.onclick = function(){ api('/api/admin/keys/' + b.getAttribute('data-copy') + '/reveal').then(function(r){ if (navigator.clipboard) { navigator.clipboard.writeText(r.key); } toast('Copied'); }); };
+    });
+    $$('[data-del]').forEach(function(b){
+      b.onclick = function(){ confirmBox('Delete key?', 'Remove ' + b.getAttribute('data-n'), function(){ api('/api/admin/keys/' + b.getAttribute('data-del'), 'DELETE').then(vKeys); }); };
+    });
+  });
+}
+function vAdmins(){
+  api('/api/admin/admins').then(function(l){
+    $('#content').innerHTML = '<div class="header"><h1>Admins</h1><button class="btn btn-primary" id="adda">+ Add Admin</button></div><div class="table-wrap"><table><tr><th>Email</th><th>Actions</th></tr>'
+      + l.map(function(e){ return '<tr><td>' + e + '</td><td><button class="icon-btn danger" data-del="' + encodeURIComponent(e) + '">X</button></td></tr>'; }).join('')
+      + '</table></div>';
+    $('#adda').onclick = function(){
+      modal('<h2>Add Admin</h2><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="ae"></div><div class="form-group"><label class="form-label">Password</label><input class="form-input" id="ap"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="ag">Save</button></div>');
+      $('#ag').onclick = function(){ api('/api/admin/admins','POST',{email:$('#ae').value, password:$('#ap').value}).then(function(){ closeModal(); vAdmins(); }); };
+    };
+    $$('[data-del]').forEach(function(b){
+      b.onclick = function(){ confirmBox('Remove admin?', 'This admin loses access.', function(){ api('/api/admin/admins/' + b.getAttribute('data-del'), 'DELETE').then(vAdmins); }); };
+    });
+  });
+}
+function vCust(){
+  api('/api/admin/customers').then(function(l){
+    $('#content').innerHTML = '<div class="header"><h1>Customers</h1><button class="btn btn-primary" id="addc">+ Add Customer</button></div><div class="table-wrap"><table><tr><th>Name</th><th>Email</th><th>Tenant</th><th>Actions</th></tr>'
+      + l.map(function(c){ return '<tr><td>' + c.name + '</td><td>' + c.email + '</td><td>' + c.tenantId + '</td><td><button class="icon-btn danger" data-del="' + c.id + '">X</button></td></tr>'; }).join('')
+      + '</table></div>';
+    $('#addc').onclick = function(){
+      modal('<h2>Add Customer</h2><div class="form-group"><label class="form-label">Name</label><input class="form-input" id="cn"></div><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="ce"></div><div class="form-group"><label class="form-label">Password</label><input class="form-input" id="cp"></div><div class="modal-actions"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="cg">Create + Provision</button></div>');
+      $('#cg').onclick = function(){ api('/api/admin/customers','POST',{name:$('#cn').value, email:$('#ce').value, password:$('#cp').value}).then(function(r){ closeModal(); toast('Provisioned on key: ' + r.key); vCust(); }); };
+    };
+    $$('[data-del]').forEach(function(b){
+      b.onclick = function(){ confirmBox('Delete customer?', 'This removes their access.', function(){ api('/api/admin/customers/' + b.getAttribute('data-del'), 'DELETE').then(vCust); }); };
+    });
+  });
+}
+function vConsole(){
+  $('#content').innerHTML = '<div class="header"><h1>SQL Console</h1></div><div class="terminal"><div class="terminal-body" id="term"></div><div style="padding:12px 16px;border-top:1px solid var(--border)"><div class="sql-input-wrap"><span class="sql-prompt">ne7sql=#</span><input class="sql-input" id="dbx" placeholder="tenant" style="max-width:140px"><input class="sql-input" id="sql" placeholder="SELECT * FROM ..."><button class="btn btn-primary btn-sm" id="run">Run</button></div></div></div>';
+  function run(){
+    var s = $('#sql').value;
+    if (!s) { return; }
+    $('#term').innerHTML += '<div class="log-line"><span class="log-module">=&gt;</span><span class="log-msg">' + s + '</span></div>';
+    $('#sql').value = '';
+    api('/api/query','POST',{sql:s, tenantId:$('#dbx').value}).then(function(r){
+      $('#term').innerHTML += '<div class="log-line"><span class="log-level ' + (r.error ? 'ERROR' : 'INFO') + '">' + (r.error || r.message || 'OK') + '</span><span class="log-msg">' + (r.rows ? NL + JSON.stringify(r.rows.slice(0,10), null, 1) : '') + '</span></div>';
+      $('#term').scrollTop = 1e9;
+    });
+  }
+  $('#run').onclick = run;
+  $('#sql').onkeydown = function(e){ if (e.key === 'Enter') { run(); } };
+}
+function vPanel(){
+  $('#content').innerHTML = '<div class="header"><h1>NE7 Panel — Full Stack</h1></div>'
+    + '<div class="arch-card"><h3>Architecture (CF + Drime)</h3><p><b>Cloudflare Worker</b> = the brain. <b>KV</b> = keyring (Drime keys, admins, customers, signing secret). <b>Drime</b> = warehouse (customer data). Zero VPS.</p></div>'
+    + '<div class="arch-card"><h3>Inverted Postgres</h3><p>TCP socket lives client-side. The Hyperwire Agent binds localhost:5432 and tunnels Postgres wire bytes over WebSocket to the Worker.</p><div class="flow">[psql / DBeaver]' + NL + '   |  TCP (localhost:5432)' + NL + '   v' + NL + '[Hyperwire Agent]' + NL + '   |  WebSocket' + NL + '   v' + NL + '[CF Worker /cable] -&gt; Executor -&gt; Drime</div></div>'
+    + '<div class="arch-card"><h3>Full Source Code</h3><p>Every file that powers this platform.</p><div class="src-wrap"><div class="src-list" id="src-list"></div><div class="src-view"><pre id="src-code">Select a file...</pre></div></div></div>';
+  api('/api/admin/source').then(function(src){
+    var names = Object.keys(src);
+    $('#src-list').innerHTML = names.map(function(n){ return '<div class="src-file" data-f="' + n + '">' + n + '</div>'; }).join('');
+    $$('.src-file').forEach(function(f){
+      f.onclick = function(){ $$('.src-file').forEach(function(x){ x.classList.remove('active'); }); f.classList.add('active'); $('#src-code').textContent = src[f.getAttribute('data-f')]; };
+    });
+  });
+}
+function vSettings(){
+  $('#content').innerHTML = '<div class="header"><h1>Settings</h1></div><div class="danger-zone"><h3>Danger Zone</h3><p>Reset wipes all databases and customers from Drime, but keeps admins and API keys. Cannot be undone.</p><button class="btn btn-danger" id="reset-btn">Reset Platform</button></div>';
+  $('#reset-btn').onclick = function(){
+    confirmBox('Confirm Reset', 'Type RESET in the next prompt to wipe everything.', function(){
+      var w = prompt('Type RESET to confirm');
+      if (w === 'RESET') { api('/api/admin/reset','POST',{}).then(function(r){ toast('Deleted ' + r.deleted + ' files.'); }); }
+      else { toast('Aborted'); }
+    });
+  };
+}
 })();
 </script></body></html>`;
