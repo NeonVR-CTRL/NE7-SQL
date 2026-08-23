@@ -110,7 +110,7 @@ export default {
       }
       if (!role) return json({ error: 'Invalid credentials' }, 401);
       const token = await signToken({ email, role, tenantId, name, exp: Date.now() + 7 * 864e5 }, config.signSecret);
-      return json({ token, role, name });
+      return json({ token, role, name, tenantId });
     }
 
     const headerKey = (request.headers.get('Authorization') || '').replace('Bearer ', '');
@@ -163,16 +163,75 @@ export default {
         const cs = (await kvGet(kv, K.customers)) || [];
         const tenant = (b.name || '').replace(/[^a-z0-9_]/gi, '_').toLowerCase();
         const salt = uid();
-        cs.push({ id: uid(), email: (b.email || '').toLowerCase(), name: b.name, tenantId: tenant, salt, passHash: await hashPassword(b.password || '', salt) });
+        const custId = uid();
+        cs.push({ id: custId, email: (b.email || '').toLowerCase(), name: b.name, tenantId: tenant, salt, passHash: await hashPassword(b.password || '', salt), maxSizeMB: (b.storageGB || 5) * 1024, ownerEmail: null });
         await kvPut(kv, K.customers, cs);
+        
         let best = keys[0], bestFree = -1;
         for (const k of keys) { const su = await spaceUsage(k.key); if (su.healthy && su.available > bestFree) { bestFree = su.available; best = k; } }
+        if (!best) return json({ error: 'No Drime keys available' }, 400);
+        
         const smgr = new DrimeSmgr(best.key, DRIME_BASE);
         const prov = await provisionDatabase(best.key, tenant, tenant, smgr, best.id);
-        return json({ ok: true, key: best.nickname, dsn: prov.dsn, token: prov.token });
+        
+        // Update the customer record with the key it was provisioned on
+        const updated = (await kvGet(kv, K.customers)) || [];
+        const idx = updated.findIndex(c => c.id === custId);
+        if (idx >= 0) { updated[idx].keyId = best.id; updated[idx].keyNickname = best.nickname; await kvPut(kv, K.customers, updated); }
+        
+        return json({ ok: true, key: best.nickname, dsn: prov.dsn, token: prov.token, tenantId: tenant });
       }
       m = url.pathname.match(/^\/api\/admin\/customers\/([^/]+)$/);
-      if (m && request.method === 'DELETE') { await kvPut(kv, K.customers, ((await kvGet(kv, K.customers)) || []).filter((c) => c.id !== m[1])); return json({ ok: true }); }
+      if (m && request.method === 'DELETE') {
+        const cs = ((await kvGet(kv, K.customers)) || []);
+        const target = cs.find(c => c.id === m[1] || c.tenantId === m[1]);
+        if (target) {
+          // Delete all files for this tenant from Drime
+          for (const k of keys) {
+            const files = await listFiles(k.key);
+            for (const f of files) {
+              if (f.name.startsWith('t_' + target.tenantId) || f.name.startsWith(target.tenantId + '_')) {
+                await deleteFile(k.key, f.id);
+              }
+            }
+          }
+        }
+        await kvPut(kv, K.customers, cs.filter((c) => c.id !== m[1] && c.tenantId !== m[1]));
+        return json({ ok: true });
+      }
+
+      // ── TOP UP STORAGE ──
+      m = url.pathname.match(/^\/api\/admin\/databases\/([^/]+)\/topup$/);
+      if (m && request.method === 'POST') {
+        const tenantId = decodeURIComponent(m[1]);
+        const b = await request.json();
+        const amt = parseInt(b.amountGB) || 5;
+        const cs = (await kvGet(kv, K.customers)) || [];
+        const idx = cs.findIndex(c => c.tenantId === tenantId);
+        if (idx >= 0) {
+          cs[idx].maxSizeMB = (cs[idx].maxSizeMB || 5120) + (amt * 1024);
+          await kvPut(kv, K.customers, cs);
+          return json({ ok: true, addedGB: amt, newSizeMB: cs[idx].maxSizeMB });
+        }
+        return json({ error: 'Tenant not found' }, 404);
+      }
+
+      // ── ASSIGN / UNASSIGN DB TO CUSTOMER ──
+      m = url.pathname.match(/^\/api\/admin\/databases\/([^/]+)\/assign$/);
+      if (m && request.method === 'POST') {
+        const tenantId = decodeURIComponent(m[1]);
+        const b = await request.json();
+        const cs = (await kvGet(kv, K.customers)) || [];
+        const idx = cs.findIndex(c => c.tenantId === tenantId);
+        if (idx >= 0) {
+          const cust = b.customerId ? cs.find(c => c.id === b.customerId) : null;
+          cs[idx].ownerEmail = cust ? cust.email : null;
+          cs[idx].ownerId = cust ? cust.id : null;
+          await kvPut(kv, K.customers, cs);
+          return json({ ok: true, assigned: !!cust, to: cust ? cust.email : 'unassigned' });
+        }
+        return json({ error: 'Tenant not found' }, 404);
+      }
 
       if (url.pathname === '/api/admin/storage') {
         let gT = 0, gU = 0; const rows = [];
@@ -208,17 +267,32 @@ export default {
 
     if (url.pathname === '/api/databases') {
       const dbs = []; const seen = {};
+      const customers = (await kvGet(kv, K.customers)) || [];
+      
       for (const k of keys) {
         const files = await listFiles(k.key);
         for (const mf of files.filter((f) => f.name.includes('__manifest.json'))) {
           const tid = mf.name.replace('__manifest.json', '').replace(/^t_/, '');
+          
+          // RBAC: Customers only see their own tenant
           if (!isAdmin && tid !== auth.tenantId) continue;
+          
           if (seen[tid]) continue; seen[tid] = true;
           const raw = await downloadRaw(k.key, mf.id);
           if (raw) {
             try {
               const mm = JSON.parse(new TextDecoder().decode(raw));
-              dbs.push({ id: mm.tenant, name: mm.name || mm.tenant, tables: Object.keys(mm.tables || {}).length, key: k.nickname });
+              const cust = customers.find(c => c.tenantId === tid);
+              dbs.push({ 
+                id: mm.tenant || tid, 
+                name: mm.name || mm.tenant || tid, 
+                tables: Object.keys(mm.tables || {}).length, 
+                key: k.nickname,
+                tenantId: tid,
+                maxSizeMB: cust ? cust.maxSizeMB : 5120,
+                usedMB: 0,
+                ownerEmail: cust ? cust.ownerEmail : null
+              });
             } catch (e) {}
           }
         }
@@ -228,12 +302,25 @@ export default {
 
     if (url.pathname === '/api/query' && request.method === 'POST') {
       const b = await request.json();
-      const tenant = isAdmin ? (b.tenantId || auth.tenantId || 'default') : auth.tenantId;
+      
+      // RBAC: Customers can ONLY query their own tenant
+      let tenant;
+      if (isAdmin) {
+        tenant = b.tenantId || auth.tenantId || 'default';
+      } else {
+        tenant = auth.tenantId;
+        if (b.tenantId && b.tenantId !== auth.tenantId) {
+          return json({ error: 'Access denied: you can only query your own database' }, 403);
+        }
+      }
+      
       let useKey = keys[0] ? keys[0].key : null;
       for (const k of keys) {
         const files = await listFiles(k.key);
         if (files.some((f) => f.name === 't_' + tenant + '__manifest.json')) { useKey = k.key; break; }
       }
+      if (!useKey) return json({ error: 'Database not found on any storage key' }, 404);
+      
       const smgr = new DrimeSmgr(useKey, DRIME_BASE);
       try {
         const ast = parseSQL(b.sql);
