@@ -18,6 +18,7 @@ async function listFiles(apiKey){ try { const r = await fetch(DRIME_BASE + '/dri
 async function downloadRaw(apiKey, id){ try { const h = btoa(String(id)); const r = await fetch(DRIME_BASE + '/file-entries/download/' + h, { headers: { Authorization: 'Bearer ' + apiKey } }); if (!r.ok) return null; return new Uint8Array(await r.arrayBuffer()); } catch (e) { return null; } }
 async function deleteFile(apiKey, id){ const tries = [ function(){ return fetch(DRIME_BASE + '/file-entries/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + apiKey, Accept: 'application/json' } }); }, function(){ return fetch(DRIME_BASE + '/file-entries/' + id + '?_method=DELETE', { method: 'POST', headers: { Authorization: 'Bearer ' + apiKey, Accept: 'application/json' } }); } ]; for (let i=0;i<tries.length;i++){ try { const r = await tries[i](); if (r.ok || r.status === 204) return true; } catch (e) {} } return false; }
 async function spaceUsage(apiKey){ try { const r = await fetch(DRIME_BASE + '/user/space-usage?workspaceId=0', { headers: { Authorization: 'Bearer ' + apiKey, Accept: 'application/json' } }); if (r.ok) { const s = await r.json(); return { used: s.used || 0, available: s.available || 0, healthy: true }; } } catch (e) {} return { used: 0, available: 0, healthy: false }; }
+async function tenantTables(keys, c){ try { const keyObj = keys.find(function(k){ return k.id === c.keyId; }) || keys[0]; if (!keyObj) return 0; const files = await listFiles(keyObj.key); const mf = files.find(function(f){ return f.name.indexOf(c.tenantId) !== -1 && f.name.indexOf('manifest') !== -1; }); if (!mf) return 0; const raw = await downloadRaw(keyObj.key, mf.id); if (!raw) return 0; const mm = JSON.parse(new TextDecoder().decode(raw)); return Object.keys(mm.tables || {}).length; } catch (e) { return 0; } }
 
 export default {
   async fetch(request, env) {
@@ -95,19 +96,21 @@ export default {
         await kvPut(kv, K.customers, cs);
         let best = keys[0], bestFree = -1;
         for (let i=0;i<keys.length;i++){ const su = await spaceUsage(keys[i].key); if (su.healthy && su.available > bestFree) { bestFree = su.available; best = keys[i]; } }
-        if (!best) return json({ error: 'No Drime keys available' }, 400);
-        const smgr = new DrimeSmgr(best.key, DRIME_BASE);
-        const prov = await provisionDatabase(best.key, tenant, tenant, smgr, best.id);
-        const updated = (await kvGet(kv, K.customers)) || [];
-        const idx = updated.findIndex(function(c){ return c.id === custId; });
-        if (idx >= 0) { updated[idx].keyId = best.id; updated[idx].keyNickname = best.nickname; await kvPut(kv, K.customers, updated); }
-        return json({ ok: true, key: best.nickname, dsn: prov.dsn, token: prov.token, tenantId: tenant });
+        let dsn = '', token = '';
+        if (best) {
+          const smgr = new DrimeSmgr(best.key, DRIME_BASE);
+          try { const prov = await provisionDatabase(best.key, tenant, tenant, smgr, best.id); dsn = prov.dsn; token = prov.token; } catch (e) {}
+          const updated = (await kvGet(kv, K.customers)) || [];
+          const idx = updated.findIndex(function(c){ return c.id === custId; });
+          if (idx >= 0) { updated[idx].keyId = best.id; updated[idx].keyNickname = best.nickname; await kvPut(kv, K.customers, updated); }
+        }
+        return json({ ok: true, key: best ? best.nickname : '-', dsn: dsn, token: token, tenantId: tenant });
       }
       m = url.pathname.match(/^\/api\/admin\/customers\/([^/]+)$/);
       if (m && request.method === 'DELETE') {
         const cs = (await kvGet(kv, K.customers)) || [];
         const target = cs.find(function(c){ return c.id === m[1] || c.tenantId === m[1]; });
-        if (target) { for (let i=0;i<keys.length;i++){ const files = await listFiles(keys[i].key); for (let j=0;j<files.length;j++){ if (files[j].name.indexOf('t_' + target.tenantId) === 0) { await deleteFile(keys[i].key, files[j].id); } } } }
+        if (target) { for (let i=0;i<keys.length;i++){ const files = await listFiles(keys[i].key); for (let j=0;j<files.length;j++){ if (files[j].name.indexOf(target.tenantId) !== -1) { await deleteFile(keys[i].key, files[j].id); } } } }
         await kvPut(kv, K.customers, cs.filter(function(c){ return c.id !== m[1] && c.tenantId !== m[1]; }));
         return json({ ok: true });
       }
@@ -122,34 +125,33 @@ export default {
     }
 
     if (!isAuthed) return json({ error: 'unauthed' }, 401);
+
+    // ✅ DATABASES NOW READ FROM KV (source of truth) — always shows instantly
     if (url.pathname === '/api/databases') {
-      const dbs = []; const seen = {};
       const customers = (await kvGet(kv, K.customers)) || [];
-      for (let i=0;i<keys.length;i++){
-        const files = await listFiles(keys[i].key);
-        for (let j=0;j<files.length;j++){
-          const mf = files[j];
-          if (mf.name.indexOf('__manifest.json') === -1) continue;
-          const tid = mf.name.replace('__manifest.json','').replace(/^t_/,'');
-          if (!isAdmin && tid !== auth.tenantId) continue;
-          if (seen[tid]) continue; seen[tid] = true;
-          const raw = await downloadRaw(keys[i].key, mf.id);
-          if (raw) { try { const mm = JSON.parse(new TextDecoder().decode(raw)); const cust = customers.find(function(c){ return c.tenantId === tid; }); dbs.push({ id: mm.tenant || tid, name: mm.name || mm.tenant || tid, tables: Object.keys(mm.tables || {}).length, key: keys[i].nickname, tenantId: tid, maxSizeMB: cust ? cust.maxSizeMB : 5120, usedMB: 0, ownerEmail: cust ? cust.ownerEmail : null }); } catch (e) {} }
-        }
+      const visible = isAdmin ? customers : customers.filter(function(c){ return c.tenantId === auth.tenantId; });
+      const dbs = [];
+      for (let i=0;i<visible.length;i++){
+        const c = visible[i];
+        const tables = await tenantTables(keys, c);
+        dbs.push({ id: c.tenantId, name: c.name, tenantId: c.tenantId, tables: tables, key: c.keyNickname || (keys[0] ? keys[0].nickname : '-'), maxSizeMB: c.maxSizeMB || 5120, usedMB: 0, ownerEmail: c.ownerEmail || null });
       }
       return json(dbs);
     }
+
     if (url.pathname === '/api/query' && request.method === 'POST') {
       const b = await request.json();
       let tenant;
       if (isAdmin) { tenant = b.tenantId || auth.tenantId || 'default'; }
       else { tenant = auth.tenantId; if (b.tenantId && b.tenantId !== auth.tenantId) return json({ error: 'Access denied' }, 403); }
-      let useKey = keys[0] ? keys[0].key : null;
-      for (let i=0;i<keys.length;i++){ const files = await listFiles(keys[i].key); if (files.some(function(f){ return f.name === 't_' + tenant + '__manifest.json'; })) { useKey = keys[i].key; break; } }
-      if (!useKey) return json({ error: 'Database not found' }, 404);
-      const smgr = new DrimeSmgr(useKey, DRIME_BASE);
+      const customers = (await kvGet(kv, K.customers)) || [];
+      const cust = customers.find(function(c){ return c.tenantId === tenant; });
+      let useKey = cust ? (keys.find(function(k){ return k.id === cust.keyId; }) || keys[0]) : keys[0];
+      if (!useKey) return json({ error: 'No storage key' }, 404);
+      const smgr = new DrimeSmgr(useKey.key, DRIME_BASE);
       try { const ast = parseSQL(b.sql); const plan = planQuery(ast); const exec = new Executor(smgr, tenant); const res = await exec.execute(plan); return json(Object.assign({}, res, { ms: 5, message: res.command })); } catch (e) { return json({ error: e.message, message: e.message }, 400); }
     }
+
     return json({ engine: 'NE7-SQL', status: 'Online' });
   }
 };
